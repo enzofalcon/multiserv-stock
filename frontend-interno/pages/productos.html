@@ -49,27 +49,60 @@
 
 <!-- Lightbox Disponibilidad -->
 <div id="modalDisponibilidad" class="modal hidden">
+  <div class="modal-overlay"></div>
 
   <div class="modal-content">
     <div class="modal-header">
-      <h2 id="modalTitulo">Disponibilidad</h2>
-      <button id="cerrarModal" class="btn btn-secondary">✕</button>
+      <h2 id="tituloDisponibilidad">Disponibilidad</h2>
+      <button id="cerrarModalDisponibilidad" class="btn-close">×</button>
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Sucursal</th>
-          <th>Cantidad</th>
-        </tr>
-      </thead>
-      <tbody id="tablaDisponibilidad">
-        <!-- JS -->
-      </tbody>
-    </table>
-
+    <div class="modal-body">
+      <table>
+        <thead>
+          <tr>
+            <th>Sucursal</th>
+            <th>Cantidad</th>
+          </tr>
+        </thead>
+        <tbody id="tablaDisponibilidad"></tbody>
+      </table>
+    </div>
   </div>
+</div>
 
+
+
+<!-- Modal: Nuevo Producto -->
+<div id="modalNuevoProducto" class="modal hidden">
+  <div class="modal-overlay"></div>
+
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Nuevo producto</h2>
+      <button id="cerrarModalProducto" class="btn-close">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="descripcionProducto">Descripción</label>
+        <input
+          type="text"
+          id="descripcionProducto"
+          placeholder="Ej: Teclado inalámbrico"
+        />
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button id="btnCancelarProducto" class="btn btn-secondary">
+        Cancelar
+      </button>
+      <button id="btnGuardarProducto" class="btn btn-primary">
+        Guardar
+      </button>
+    </div>
+  </div>
 </div>
 
 

@@ -261,3 +261,64 @@ select:focus {
   align-items: center;
   margin-bottom: 1rem;
 }
+
+
+/* ---------- Modal (Lightbox) ---------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  position: relative;
+  background-color: var(--color-surface);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 420px;
+  box-shadow: var(--shadow);
+  z-index: 1;
+}
+
+.modal-header,
+.modal-footer {
+  padding: 1rem;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-footer {
+  border-top: none;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.modal-body {
+  padding: 1rem;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
