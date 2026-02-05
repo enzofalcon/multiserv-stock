@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Multiserv Stock – Productos</title>
+
+  <!-- Tipografía -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+  <header>
+    <h1>Multiserv Stock</h1>
+  </header>
+
+  <main class="main-container">
+
+    <!-- Barra de acciones -->
+    <div class="actions-bar">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Buscar producto…"
+        disabled
+      >
+
+      <a href="pages/productos.html" class="btn btn-primary">
+        Agregar producto
+      </a>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-wrapper">
+      <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Descripción</th>
+            <th>Stock total</th>
+            <th>Sucursal 1</th>
+            <th>Sucursal 2</th>
+            <th>Sucursal 3</th>
+            <th>Stock mínimo</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+</thead>
+        <tbody id="tabla-productos">
+          <!-- Se carga por JS -->
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <!-- JS -->
+  <script>
+  const tabla = document.getElementById("tabla-productos");
+
+  fetch("http://localhost/multiserv-stock/api-stock/public/productos.php")
+    .then(response => response.json())
+    .then(productos => {
+
+      tabla.innerHTML = "";
+
+      productos.forEach(p => {
+
+        const stockTotal = p.stock_total ?? 0;
+        const stockMin = p.stock_minimo ?? 0;
+
+        const estado = (stockTotal <= stockMin)
+          ? "Bajo stock"
+          : "Normal";
+
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+          <td>${p.codigo}</td>
+          <td>${p.descripcion}</td>
+          <td>${stockTotal}</td>
+          <td>${p.stock_s1 ?? 0}</td>
+          <td>${p.stock_s2 ?? 0}</td>
+          <td>${p.stock_s3 ?? 0}</td>
+          <td>${stockMin}</td>
+          <td>${estado}</td>
+          <td>
+            <button class="btn btn-secondary" disabled>Editar</button>
+          </td>
+        `;
+
+        tabla.appendChild(fila);
+      });
+
+    })
+    .catch(error => {
+      console.error("Error al cargar productos:", error);
+    });
+</script>
+
+
+</body>
+</html>

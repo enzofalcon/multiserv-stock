@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Multiserv Stock – Productos</title>
+
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+
+<header>
+  <h1>Multiserv Stock – Productos</h1>
+</header>
+
+<main class="main-container">
+
+  <div class="actions-bar">
+    <input
+      type="text"
+      id="searchProducto"
+      class="search-input"
+      placeholder="Buscar producto..."
+    >
+
+    <button id="btnNuevoProducto" class="btn btn-primary">
+      Nuevo producto
+    </button>
+  </div>
+
+  <div class="table-wrapper">
+    <table id="tablaProductos">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Descripción</th>
+        <th>Stock total</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+      <tbody>
+        <!-- Se carga por JS -->
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+
+<!-- Lightbox Disponibilidad -->
+<div id="modalDisponibilidad" class="modal hidden">
+
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modalTitulo">Disponibilidad</h2>
+      <button id="cerrarModal" class="btn btn-secondary">✕</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Sucursal</th>
+          <th>Cantidad</th>
+        </tr>
+      </thead>
+      <tbody id="tablaDisponibilidad">
+        <!-- JS -->
+      </tbody>
+    </table>
+
+  </div>
+
+</div>
+
+
+<script src="../js/productos.js"></script>
+</body>
+</html>
