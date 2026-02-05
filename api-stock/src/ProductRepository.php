@@ -23,6 +23,22 @@ class ProductRepository {
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function create(string $descripcion): int
+    {
+        $sql = "
+            INSERT INTO producto (descripcion)
+            VALUES (:descripcion)
+        ";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':descripcion', $descripcion);
+        $stmt->execute();
+
+        return (int) $this->conn->lastInsertId();
+    }
+
+
 }
 
 

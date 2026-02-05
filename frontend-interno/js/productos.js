@@ -79,12 +79,26 @@ function cerrarModalProducto() {
 
 function guardarProducto() {
   const input = document.getElementById('descripcionProducto');
+  const boton = document.getElementById('btnGuardarProducto');
+  const mensaje = document.getElementById('mensajeProducto');
+
   const descripcion = input.value.trim();
 
+  // Reset mensaje
+  mensaje.className = 'message hidden';
+  mensaje.innerText = '';
+
   if (descripcion === '') {
-    alert('La descripción es obligatoria');
+    mensaje.innerText = 'La descripción es obligatoria';
+    mensaje.classList.remove('hidden');
+    mensaje.classList.add('message-error');
+    input.focus();
     return;
   }
+
+  // UI: deshabilitar botón
+  boton.disabled = true;
+  boton.innerText = 'Guardando...';
 
   fetch('http://localhost/multiserv-stock/api-stock/public/productos.php', {
     method: 'POST',
@@ -92,12 +106,38 @@ function guardarProducto() {
     body: JSON.stringify({ descripcion })
   })
     .then(res => res.json())
-    .then(() => {
-      cerrarModalProducto();
+    .then(resp => {
+      if (resp.error) {
+        mensaje.innerText = resp.error;
+        mensaje.classList.remove('hidden');
+        mensaje.classList.add('message-error');
+        return;
+      }
+
+      // Éxito
+      mensaje.innerText = 'Producto creado correctamente';
+      mensaje.classList.remove('hidden');
+      mensaje.classList.add('message-success');
+
+      // Refrescar listado
       cargarProductos();
+
+      // Cerrar modal luego de un momento
+      setTimeout(() => {
+        cerrarModalProducto();
+      }, 900);
     })
-    .catch(() => alert('Error al guardar producto'));
+    .catch(() => {
+      mensaje.innerText = 'Error al guardar el producto';
+      mensaje.classList.remove('hidden');
+      mensaje.classList.add('message-error');
+    })
+    .finally(() => {
+      boton.disabled = false;
+      boton.innerText = 'Guardar';
+    });
 }
+
 
 // ==================================================
 // MODAL DISPONIBILIDAD
