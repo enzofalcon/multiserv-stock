@@ -58,6 +58,8 @@
     </div>
 
     <div class="modal-body">
+
+      <!-- Tabla de disponibilidad -->
       <table>
         <thead>
           <tr>
@@ -65,11 +67,46 @@
             <th>Cantidad</th>
           </tr>
         </thead>
-        <tbody id="tablaDisponibilidad"></tbody>
+        <tbody id="tablaDisponibilidad">
+          <!-- filas por JS -->
+        </tbody>
       </table>
+
+      <hr>
+
+      <!-- Formulario carga stock -->
+      <h3>Cargar stock inicial</h3>
+
+      <div class="form-group">
+        <label for="idSucursal">Sucursal</label>
+        <select id="idSucursal">
+          <option value="">Seleccionar sucursal</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="cantidadStock">Cantidad</label>
+        <input
+          type="number"
+          id="cantidadStock"
+          min="1"
+          placeholder="Cantidad a ingresar"
+        >
+      </div>
+
+      <button
+        class="btn btn-primary"
+        id="btnGuardarStock"
+      >
+        Guardar stock
+      </button>
+
+      <div id="mensajeStock" class="message hidden"></div>
+
     </div>
   </div>
 </div>
+
 
 
 

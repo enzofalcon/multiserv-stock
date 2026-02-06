@@ -1,8 +1,13 @@
+let productoActivoId = null;
 // ==================================================
 // INIT
 // ==================================================
 document.addEventListener('DOMContentLoaded', () => {
   cargarProductos();
+document
+  .getElementById('btnGuardarStock')
+  .addEventListener('click', guardarStockInicial);
+
 
   // ---------- Modal Nuevo Producto ----------
   const btnNuevo = document.getElementById('btnNuevoProducto');
@@ -143,9 +148,16 @@ function guardarProducto() {
 // MODAL DISPONIBILIDAD
 // ==================================================
 function verDisponibilidad(idProducto, descripcion) {
+  // Guardamos qué producto está activo
+  productoActivoId = idProducto;
+
   document.getElementById('tituloDisponibilidad').innerText =
     `Disponibilidad – ${descripcion}`;
 
+  // Cargar sucursales en el select
+  cargarSucursales();
+
+  // Cargar disponibilidad del producto
   fetch('http://localhost/multiserv-stock/api-stock/public/disponibilidad.php')
     .then(res => res.json())
     .then(data => {
@@ -153,8 +165,11 @@ function verDisponibilidad(idProducto, descripcion) {
       renderDisponibilidad(filtrados);
       abrirModalDisponibilidad();
     })
-    .catch(() => alert('Error al cargar disponibilidad'));
+    .catch(() => {
+      alert('Error al cargar disponibilidad');
+    });
 }
+
 
 function renderDisponibilidad(registros) {
   const tbody = document.getElementById('tablaDisponibilidad');
@@ -203,4 +218,75 @@ function escapeHtml(text) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+function cargarSucursales() {
+  const select = document.getElementById('idSucursal');
+
+  // Limpiar opciones anteriores
+  select.innerHTML = '<option value="">Seleccionar sucursal</option>';
+
+  fetch('http://localhost/multiserv-stock/api-stock/public/sucursales.php')
+    .then(res => res.json())
+    .then(data => {
+      data.forEach(s => {
+        const option = document.createElement('option');
+        option.value = s.idSucursal;
+        option.textContent = `Sucursal ${s.numSucursal}`;
+        select.appendChild(option);
+      });
+    })
+    .catch(() => {
+      alert('Error al cargar sucursales');
+    });
+}
+
+function guardarStockInicial() {
+  const idSucursal = document.getElementById('idSucursal').value;
+  const cantidad = document.getElementById('cantidadStock').value;
+  const mensaje = document.getElementById('mensajeStock');
+
+  mensaje.className = 'message hidden';
+  mensaje.innerText = '';
+
+  if (!productoActivoId || !idSucursal || cantidad <= 0) {
+    mensaje.innerText = 'Seleccione sucursal y cantidad válida';
+    mensaje.classList.remove('hidden');
+    mensaje.classList.add('message-error');
+    return;
+  }
+
+  fetch('http://localhost/multiserv-stock/api-stock/public/disponibilidad.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      idProducto: productoActivoId,
+      idSucursal: Number(idSucursal),
+      cantidad: Number(cantidad)
+    })
+  })
+    .then(res => res.json())
+    .then(resp => {
+      if (resp.error) {
+        mensaje.innerText = resp.error;
+        mensaje.classList.remove('hidden');
+        mensaje.classList.add('message-error');
+        return;
+      }
+
+      mensaje.innerText = 'Stock cargado correctamente';
+      mensaje.classList.remove('hidden');
+      mensaje.classList.add('message-success');
+
+      document.getElementById('cantidadStock').value = '';
+
+      cargarProductos();
+      // Recargar disponibilidad
+      verDisponibilidad(productoActivoId, '');
+    })
+    .catch(() => {
+      mensaje.innerText = 'Error al guardar stock';
+      mensaje.classList.remove('hidden');
+      mensaje.classList.add('message-error');
+    });
 }
