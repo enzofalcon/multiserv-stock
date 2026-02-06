@@ -148,16 +148,18 @@ function guardarProducto() {
 // MODAL DISPONIBILIDAD
 // ==================================================
 function verDisponibilidad(idProducto, descripcion) {
-  // Guardamos qué producto está activo
   productoActivoId = idProducto;
+
+  // 🔹 LIMPIAR MENSAJE DE STOCK
+  const mensaje = document.getElementById('mensajeStock');
+  mensaje.className = 'message hidden';
+  mensaje.innerText = '';
 
   document.getElementById('tituloDisponibilidad').innerText =
     `Disponibilidad – ${descripcion}`;
 
-  // Cargar sucursales en el select
   cargarSucursales();
 
-  // Cargar disponibilidad del producto
   fetch('http://localhost/multiserv-stock/api-stock/public/disponibilidad.php')
     .then(res => res.json())
     .then(data => {
@@ -169,6 +171,7 @@ function verDisponibilidad(idProducto, descripcion) {
       alert('Error al cargar disponibilidad');
     });
 }
+
 
 
 function renderDisponibilidad(registros) {
@@ -282,11 +285,24 @@ function guardarStockInicial() {
 
       cargarProductos();
       // Recargar disponibilidad
-      verDisponibilidad(productoActivoId, '');
+      recargarDisponibilidad();
     })
     .catch(() => {
       mensaje.innerText = 'Error al guardar stock';
       mensaje.classList.remove('hidden');
       mensaje.classList.add('message-error');
+    });
+}
+
+
+function recargarDisponibilidad() {
+  fetch('http://localhost/multiserv-stock/api-stock/public/disponibilidad.php')
+    .then(res => res.json())
+    .then(data => {
+      const filtrados = data.filter(d => d.idProducto === productoActivoId);
+      renderDisponibilidad(filtrados);
+    })
+    .catch(() => {
+      alert('Error al recargar disponibilidad');
     });
 }
