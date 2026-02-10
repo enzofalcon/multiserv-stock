@@ -27,7 +27,7 @@ if ($method === 'POST') {
     $correo = $input['correo'] ?? null;
     $rut = $input['rut'] ?? null;
 
-    if (!$nombre || !$correo) {
+   if (!$nombre || !$correo || !$rut) {
         http_response_code(400);
         echo json_encode(['error' => 'Datos inválidos']);
         exit;

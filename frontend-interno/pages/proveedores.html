@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Proveedores – Multiserv Stock</title>
+
+  <!-- Tipografía -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body>
+
+<header>
+  <h1>Gestión de Proveedores</h1>
+
+  <nav class="menu">
+    <a href="../index.html" class="btn btn-secondary">Inicio</a>
+    <a href="productos.html" class="btn btn-secondary">Productos</a>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <!-- Barra de acciones -->
+  <div class="actions-bar">
+    <button id="btnNuevoProveedor" class="btn btn-primary">
+      Nuevo proveedor
+    </button>
+  </div>
+
+  <!-- Tabla -->
+  <div class="table-wrapper">
+    <table class="table" id="tablaProveedores">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>RUT</th>
+          <th>Correo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- JS cargará aquí -->
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<!-- Modal: Nuevo Proveedor -->
+<div id="modalProveedor" class="modal hidden">
+  <div class="modal-overlay"></div>
+
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Nuevo proveedor</h2>
+      <button id="cerrarModalProveedor" class="btn-close">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div id="mensajeProveedor" class="message hidden"></div>
+
+      <div class="form-group">
+        <label for="nombreProveedor">Nombre</label>
+        <input type="text" id="nombreProveedor">
+      </div>
+
+      <div class="form-group">
+        <label for="rutProveedor">RUT</label>
+        <input type="text" id="rutProveedor">
+      </div>
+
+      <div class="form-group">
+        <label for="correoProveedor">Correo</label>
+        <input type="email" id="correoProveedor">
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button id="btnCancelarProveedor" class="btn btn-secondary">Cancelar</button>
+      <button id="btnGuardarProveedor" class="btn btn-primary">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/proveedores.js"></script>
+
+</body>
+</html>
