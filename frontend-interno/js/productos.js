@@ -17,7 +17,7 @@ document
     document.querySelector('#modalNuevoProducto .modal-overlay');
   const btnGuardar = document.getElementById('btnGuardarProducto');
 
-  if (btnNuevo) btnNuevo.addEventListener('click', abrirModalProducto);
+  if (btnNuevo) btnNuevo.addEventListener('click', abrirModalProducto); 
   if (btnCerrar) btnCerrar.addEventListener('click', cerrarModalProducto);
   if (btnCancelar) btnCancelar.addEventListener('click', cerrarModalProducto);
   if (overlayProducto)
@@ -34,6 +34,21 @@ document
     btnCerrarDisp.addEventListener('click', cerrarModalDisponibilidad);
   if (overlayDisp)
     overlayDisp.addEventListener('click', cerrarModalDisponibilidad);
+
+
+  // Modal Costo
+  const btnCerrarCosto = document.getElementById('cerrarModalCosto');
+  const btnCancelarCosto = document.getElementById('btnCancelarCosto');
+  const overlayCosto = document.querySelector('#modalCosto .modal-overlay');
+  const btnGuardarCosto = document.getElementById('btnGuardarCosto');
+
+  if (btnCerrarCosto) btnCerrarCosto.addEventListener('click', cerrarModalCosto);
+  if (btnCancelarCosto) btnCancelarCosto.addEventListener('click', cerrarModalCosto);
+  if (overlayCosto) overlayCosto.addEventListener('click', cerrarModalCosto);
+
+  if (btnGuardarCosto) btnGuardarCosto.addEventListener('click', guardarCosto);
+
+
 });
 
 // ==================================================
@@ -62,6 +77,11 @@ function renderTablaProductos(productos) {
         <button class="btn btn-secondary"
           onclick="verDisponibilidad(${p.id}, '${escapeHtml(p.descripcion)}')">
           Ver
+        </button>
+
+        <button class="btn btn-primary"
+          onclick="abrirModalCosto(${p.id}, '${escapeHtml(p.descripcion)}')">
+          Agregar costo
         </button>
       </td>
     `;
@@ -304,5 +324,103 @@ function recargarDisponibilidad() {
     })
     .catch(() => {
       alert('Error al recargar disponibilidad');
+    });
+}
+
+let productoCostoId = null;
+
+function abrirModalCosto(idProducto, descripcion) {
+  productoCostoId = idProducto;
+
+  // Título del modal
+  document.getElementById('tituloCosto').innerText =
+    `Agregar costo – ${descripcion}`;
+
+  // Reset mensaje
+  const mensaje = document.getElementById('mensajeCosto');
+  mensaje.className = 'message hidden';
+  mensaje.innerText = '';
+
+  // Reset inputs
+  document.getElementById('costoProducto').value = '';
+  document.getElementById('ivaProducto').value = 22;
+
+  // Cargar proveedores en el select
+  cargarProveedoresCosto();
+
+  // Mostrar modal
+  document.getElementById('modalCosto').classList.remove('hidden');
+}
+
+
+function cargarProveedoresCosto() {
+  fetch('../../api-stock/public/proveedores.php')
+    .then(res => res.json())
+    .then(data => {
+      const select = document.getElementById('proveedorCosto');
+      select.innerHTML = '<option value="">Seleccione proveedor</option>';
+
+      data.forEach(pr => {
+        const opt = document.createElement('option');
+        opt.value = pr.idProveedor;
+        opt.textContent = pr.nombre;
+        select.appendChild(opt);
+      });
+    })
+    .catch(err => console.error("Error cargando proveedores:", err));
+}
+
+function cerrarModalCosto() {
+  document.getElementById('modalCosto').classList.add('hidden');
+}
+
+function guardarCosto() {
+  const proveedor = document.getElementById('proveedorCosto').value;
+  const costo = document.getElementById('costoProducto').value;
+  const iva = document.getElementById('ivaProducto').value;
+
+  const mensaje = document.getElementById('mensajeCosto');
+  mensaje.className = 'message hidden';
+  mensaje.innerText = '';
+
+  // Validación
+  if (!proveedor || !costo || costo <= 0) {
+    mensaje.innerText = 'Seleccione proveedor y costo válido.';
+    mensaje.classList.remove('hidden');
+    mensaje.classList.add('message-error');
+    return;
+  }
+
+  fetch('../../api-stock/public/registro_costo.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      idProducto: productoCostoId,
+      idProveedor: Number(proveedor),
+      costo: Number(costo),
+      porcentajeIVA: Number(iva)
+    })
+  })
+    .then(res => res.json())
+    .then(resp => {
+      if (resp.error) {
+        mensaje.innerText = resp.error;
+        mensaje.classList.remove('hidden');
+        mensaje.classList.add('message-error');
+        return;
+      }
+
+      mensaje.innerText = 'Costo registrado correctamente.';
+      mensaje.classList.remove('hidden');
+      mensaje.classList.add('message-success');
+
+      setTimeout(() => {
+        cerrarModalCosto();
+      }, 800);
+    })
+    .catch(() => {
+      mensaje.innerText = 'Error al guardar el costo.';
+      mensaje.classList.remove('hidden');
+      mensaje.classList.add('message-error');
     });
 }

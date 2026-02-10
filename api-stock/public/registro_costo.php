@@ -1,32 +1,46 @@
 <?php
-require_once __DIR__ . "/../src/RegistroCostoRepository.php";
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-header("Content-Type: application/json; charset=utf-8");
+require_once __DIR__ . '/../src/Database.php';
+
+header('Content-Type: application/json');
+
+$db = new Database();
+$conn = $db->getConnection();
+
+$input = json_decode(file_get_contents('php://input'), true);
+
+$idProducto   = $input['idProducto'] ?? null;
+$idProveedor  = $input['idProveedor'] ?? null;
+$costo        = $input['costo'] ?? null;
+$iva          = $input['porcentajeIVA'] ?? null;
+
+if (!$idProducto || !$idProveedor || !$costo || $costo <= 0) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Datos inválidos']);
+    exit;
+}
 
 try {
-    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-        http_response_code(405);
-        echo json_encode(["ok" => false, "error" => "Método no permitido"], JSON_UNESCAPED_UNICODE);
-        exit;
-    }
+    $stmt = $conn->prepare("
+        INSERT INTO registro_costo
+        (idProducto, idProveedor, costo, fechaHora, porcentajeIVA)
+        VALUES
+        (:idProducto, :idProveedor, :costo, NOW(), :iva)
+    ");
 
-    $input = json_decode(file_get_contents("php://input"), true);
+    $stmt->execute([
+        ':idProducto'  => $idProducto,
+        ':idProveedor' => $idProveedor,
+        ':costo'       => $costo,
+        ':iva'         => $iva
+    ]);
 
-    $repo = new RegistroCostoRepository();
-    $id = $repo->crearRegistroCosto(
-        (int) $input["idProducto"],
-        (int) $input["idProveedor"],
-        (float) $input["costo"],
-        (float) $input["porcentajeIVA"]
-    );
-
-    echo json_encode([
-        "ok" => true,
-        "message" => "Registro de costo creado",
-        "idRegistroCosto" => $id
-    ], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['success' => true]);
 
 } catch (Throwable $e) {
     http_response_code(500);
-    echo json_encode(["ok" => false, "error" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['error' => $e->getMessage()]);
 }
+

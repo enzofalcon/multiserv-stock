@@ -1,57 +1,52 @@
 <?php
+
 require_once __DIR__ . '/../src/Database.php';
 
+header('Content-Type: application/json');
+
 $db = new Database();
-$pdo = $db->getConnection();
+$conn = $db->getConnection();
 
-$mensaje = '';
+$method = $_SERVER['REQUEST_METHOD'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nombre = trim($_POST['nombre'] ?? '');
-    $correo = trim($_POST['correo'] ?? '');
-    $rut    = trim($_POST['rut'] ?? '');
+if ($method === 'GET') {
+    $stmt = $conn->query("
+        SELECT idProveedor, nombre, correo, rut
+        FROM proveedor
+        ORDER BY nombre
+    ");
 
-    if ($nombre && $correo && $rut) {
-        $sql = "INSERT INTO proveedor (nombre, correo, rut)
-                VALUES (:nombre, :correo, :rut)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            ':nombre' => $nombre,
-            ':correo' => $correo,
-            ':rut'    => $rut
-        ]);
-
-        $mensaje = 'Proveedor agregado correctamente';
-    }
+    echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+    exit;
 }
-?>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Agregar proveedor</title>
-</head>
-<body>
+if ($method === 'POST') {
+    $input = json_decode(file_get_contents('php://input'), true);
 
-<h2>Agregar proveedor</h2>
+    $nombre = $input['nombre'] ?? null;
+    $correo = $input['correo'] ?? null;
+    $rut = $input['rut'] ?? null;
 
-<?php if ($mensaje): ?>
-    <p style="color: green;"><?php echo $mensaje; ?></p>
-<?php endif; ?>
+    if (!$nombre || !$correo) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Datos inválidos']);
+        exit;
+    }
 
-<form method="post">
-    <label>Nombre</label><br>
-    <input type="text" name="nombre" required><br><br>
+    $stmt = $conn->prepare("
+        INSERT INTO proveedor (nombre, correo, rut)
+        VALUES (:nombre, :correo, :rut)
+    ");
 
-    <label>Correo</label><br>
-    <input type="email" name="correo" required><br><br>
+    $stmt->execute([
+        ':nombre' => $nombre,
+        ':correo' => $correo,
+        ':rut' => $rut
+    ]);
 
-    <label>RUT</label><br>
-    <input type="text" name="rut" required><br><br>
+    echo json_encode(['success' => true]);
+    exit;
+}
 
-    <button type="submit">Guardar</button>
-</form>
-
-</body>
-</html>
+http_response_code(405);
+echo json_encode(['error' => 'Método no permitido']);
