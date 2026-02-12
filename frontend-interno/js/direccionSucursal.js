@@ -18,11 +18,12 @@ function cerrarModalDireccionSucursal() {
 // ============================
 
 function cargarDireccionSucursal(idSucursal) {
-  fetch(`../../api-stock/public/direccion_sucursal.php?idSucursal=${idSucursal}`)
+  fetch(`/multiserv-stock/api-stock/public/direccion_sucursal.php?idSucursal=${idSucursal}`)
     .then(res => res.json())
     .then(data => {
 
-      if (data) {
+      // VERIFICACIÓN CORRECTA
+      if (data && data.idDireccionSuc) {
         modoEdicionSuc = true;
 
         document.getElementById("idDireccionSuc").value = data.idDireccionSuc;
@@ -34,8 +35,10 @@ function cargarDireccionSucursal(idSucursal) {
         observacionSuc.value = data.observacion ?? "";
 
       } else {
+        // NO EXISTE DIRECCIÓN → MODO CREACIÓN
         modoEdicionSuc = false;
         document.getElementById("formDireccionSucursal").reset();
+        document.getElementById("idDireccionSuc").value = "";
       }
 
     });
@@ -61,13 +64,16 @@ document.getElementById("formDireccionSucursal").addEventListener("submit", e =>
     observacion: observacionSuc.value
   };
 
-  let url = "../../api-stock/public/direccion_sucursal.php";
+  let url = "/multiserv-stock/api-stock/public/direccion_sucursal.php";
   let method = "POST";
 
   if (modoEdicionSuc) {
     url += `?idDireccionSuc=${document.getElementById("idDireccionSuc").value}`;
     method = "PUT";
   }
+console.log("DATA ENVIADA:", data);
+console.log("URL:", url);
+console.log("METHOD:", method);
 
   fetch(url, {
     method,

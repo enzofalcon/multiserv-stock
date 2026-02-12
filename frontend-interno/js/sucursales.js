@@ -47,37 +47,27 @@ function renderSucursales(lista) {
     // =============================
     // EVENTO DEL CHECKBOX
     // =============================
-    chk.addEventListener("change", () => {
+chk.addEventListener("change", () => {
+  if (chk.checked) {
 
-      if (chk.checked) {
+    document.getElementById("idSucursalActual").value = s.idSucursal;
 
-        // Desmarcar otros checkboxes
-        document.querySelectorAll(".chkSucursal").forEach(c => {
-          if (c !== chk) c.checked = false;
-        });
+    document.getElementById("accionesSucursal").classList.remove("hidden");
 
-        // Guardar ID
-        document.getElementById("idSucursalActual").value = s.idSucursal;
+    document.getElementById("sucursalSeleccionada").innerText =
+      `Sucursal seleccionada: ${s.numSucursal}`;
 
-        // Mostrar panel
-        document.getElementById("accionesSucursal").classList.remove("hidden");
+    marcarFilaSucursal(tr);
 
-        // Texto del panel
-        document.getElementById("sucursalSeleccionada").innerText =
-          `Sucursal seleccionada: ${s.numSucursal}`;
+  } else {
 
-        // Aplicar resaltado
-        marcarFilaSucursal(tr);
+    document.getElementById("accionesSucursal").classList.add("hidden");
+    document.getElementById("idSucursalActual").value = "";
+    document.getElementById("sucursalSeleccionada").innerText = "";
+    limpiarSeleccionSucursales();
+  }
+});
 
-      } else {
-
-        // Deseleccionar → ocultar panel
-        document.getElementById("accionesSucursal").classList.add("hidden");
-        document.getElementById("idSucursalActual").value = "";
-        document.getElementById("sucursalSeleccionada").innerText = "";
-        limpiarSeleccionSucursales();
-      }
-    });
 
     // =============================
     // CLIC EN LA FILA → seleccionar checkbox

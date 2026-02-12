@@ -1,3 +1,6 @@
+// ===============================
+// Botón del panel de acciones
+// ===============================
 document.getElementById("btnDireccionProveedor")
   .addEventListener("click", () => {
 
@@ -12,26 +15,38 @@ document.getElementById("btnDireccionProveedor")
     abrirModalDireccion();
   });
 
- 
 let modoEdicion = false;
 
-// ====================
+// ===============================
 // Abrir y cerrar modal
-// ====================
+// ===============================
 function abrirModalDireccion() {
-  document.getElementById("modalDireccion").style.display = "block";
+  const modal = document.getElementById("modalDireccion");
+  modal.classList.remove("hidden");
+  modal.style.display = ""; // Limpia cualquier override previo
 }
 
 function cerrarModalDireccion() {
-  document.getElementById("modalDireccion").style.display = "none";
+  const modal = document.getElementById("modalDireccion");
+  modal.classList.add("hidden");
+  modal.style.display = ""; // Limpia display:block si quedó aplicado
 }
 
-// ====================
+// ===============================
+// Prevenir que el click del botón Guardar reabra el modal
+// ===============================
+const btnGuardarDireccion = document.querySelector('#modalDireccion button[type="submit"]');
+
+btnGuardarDireccion.addEventListener("click", (e) => {
+  e.stopPropagation(); // 🔥 Evita que se reabra al cerrar
+});
+
+// ===============================
 // Cargar dirección (GET)
-// ====================
+// ===============================
 function cargarDireccion(idProveedor) {
   fetch(`/multiserv-stock/api-stock/public/direccion_proveedor.php?idProveedor=${idProveedor}`)
-.then(res => res.json())
+    .then(res => res.json())
     .then(data => {
       if (data) {
         modoEdicion = true;
@@ -49,9 +64,9 @@ function cargarDireccion(idProveedor) {
     });
 }
 
-// ====================
-// Guardar dirección (POST / PUT)
-// ====================
+// ===============================
+// Guardar dirección (POST o PUT)
+// ===============================
 document.getElementById("formDireccion").addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -83,14 +98,29 @@ document.getElementById("formDireccion").addEventListener("submit", function (e)
   })
     .then(res => res.json())
     .then(resp => {
+
+      // Mostrar mensaje
       document.getElementById("msgDireccion").textContent = resp.message;
+
       if (resp.success) {
-        cargarDireccion();
+
+        // Recargar dirección
+        cargarDireccion(idProveedor);
+
+        // Cerrar modal automáticamente
         cerrarModalDireccion();
+
+        // Opcional: limpiar mensaje después de cerrar
+        setTimeout(() => {
+          document.getElementById("msgDireccion").textContent = "";
+        }, 500);
       }
     });
 });
 
+// ===============================
+// Auxiliar: quitar resaltado
+// ===============================
 function quitarResaltado() {
   document.querySelectorAll("#tablaProveedores tbody tr")
     .forEach(tr => tr.classList.remove("fila-seleccionada"));
