@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Sucursales – Multiserv Stock</title>
+
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body>
+
+<header>
+  <h1>Gestión de Sucursales</h1>
+
+  <nav class="menu">
+    <a href="../index.html" class="btn btn-secondary">Inicio</a>
+    <a href="productos.html" class="btn btn-secondary">Productos</a>
+    <a href="proveedores.html" class="btn btn-secondary">Proveedores</a>
+  </nav>
+</header>
+
+<main class="main-container">
+
+  <div class="actions-bar">
+    <button id="btnNuevaSucursal" class="btn btn-primary">
+      Nueva sucursal
+    </button>
+  </div>
+
+  <!-- Panel de acciones de sucursal seleccionada -->
+  <div id="accionesSucursal" class="actions-bar hidden">
+    <span id="sucursalSeleccionada" class="selected-info"></span>
+    <button id="btnEditarSucursal" class="btn btn-primary">Editar</button>
+    <button id="btnEliminarSucursal" class="btn btn-danger">Eliminar</button>
+    <button id="btnDireccionSucursal" class="btn btn-secondary">Dirección</button>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="table" id="tablaSucursales">
+      <thead>
+        <tr>
+          <th></th>
+          <th>ID</th>
+          <th>Número</th>
+          <th>Correo</th>
+          <th>Teléfono</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- cargado por JS -->
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+
+<!-- Modal: Nueva Sucursal -->
+<div id="modalSucursal" class="modal hidden">
+  <div class="modal-overlay"></div>
+
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h2>Nueva sucursal</h2>
+      <button id="cerrarModalSucursal" class="btn-close">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div id="mensajeSucursal" class="message hidden"></div>
+
+      <div class="form-group">
+        <label>Número de sucursal</label>
+        <input id="numeroSucursal" type="number" min="1">
+      </div>
+
+      <div class="form-group">
+        <label>Correo</label>
+        <input id="correoSucursal" type="email">
+      </div>
+
+      <div class="form-group">
+        <label>Teléfono</label>
+        <input id="telefonoSucursal" type="text">
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button id="btnCancelarSucursal" class="btn btn-secondary">Cancelar</button>
+      <button id="btnGuardarSucursal" class="btn btn-primary">Guardar</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal Dirección de Sucursal -->
+<div id="modalDireccionSucursal" class="modal hidden">
+  <div class="modal-overlay"></div>
+
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Dirección de la sucursal</h2>
+      <button onclick="cerrarModalDireccionSucursal()" class="btn-close">×</button>
+    </div>
+
+    <div class="modal-body">
+      <form id="formDireccionSucursal">
+        <input type="hidden" id="idDireccionSuc">
+
+        <div class="form-group">
+          <label>Departamento</label>
+          <input type="text" id="departamentoSuc" required>
+        </div>
+
+        <div class="form-group">
+          <label>Localidad</label>
+          <input type="text" id="localidadSuc" required>
+        </div>
+
+        <div class="form-group">
+          <label>Calle principal</label>
+          <input type="text" id="callePrincipalSuc" required>
+        </div>
+
+        <div class="form-group">
+          <label>Número</label>
+          <input type="text" id="numeroSuc">
+        </div>
+
+        <div class="form-group">
+          <label>Calle intersección</label>
+          <input type="text" id="calleInterseccionSuc">
+        </div>
+
+        <div class="form-group">
+          <label>Observación</label>
+          <input type="text" id="observacionSuc">
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" onclick="cerrarModalDireccionSucursal()" class="btn btn-secondary">
+        Cancelar
+      </button>
+      <button type="submit" form="formDireccionSucursal" class="btn btn-primary">
+        Guardar
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<input type="hidden" id="idSucursalActual">
+
+
+<script src="../js/sucursales.js"></script>
+<script src="../js/direccionSucursal.js"></script>
+
+</body>
+</html>

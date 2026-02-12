@@ -235,24 +235,15 @@ select:focus {
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
+  background: rgba(0, 0, 0, 0.5); /* overlay */
   z-index: 1000;
 }
 
 .modal.hidden {
   display: none;
-}
-
-.modal-content {
-  background: white;
-  padding: 1.5rem;
-  border-radius: var(--radius);
-  width: 90%;
-  max-width: 500px;
-  box-shadow: var(--shadow);
 }
 
 .modal-header {
@@ -287,11 +278,13 @@ select:focus {
   position: relative;
   background-color: var(--color-surface);
   border-radius: var(--radius);
-  width: 100%;
+  width: 90%;            /* ✔ se centra */
   max-width: 420px;
+  margin: 0 auto;        /* ✔ asegura centrado */
   box-shadow: var(--shadow);
   z-index: 1;
 }
+
 
 .modal-header,
 .modal-footer {
@@ -321,4 +314,9 @@ select:focus {
   border: none;
   font-size: 1.4rem;
   cursor: pointer;
+}
+
+
+.fila-activa {
+  background-color: #dbeafe !important;
 }

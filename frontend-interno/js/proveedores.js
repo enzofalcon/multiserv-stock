@@ -26,18 +26,94 @@ function cargarProveedores() {
     .catch(() => alert('Error cargando proveedores'));
 }
 
+
+
+
+
+
 function renderTablaProveedores(lista) {
   const tbody = document.querySelector('#tablaProveedores tbody');
   tbody.innerHTML = '';
 
   lista.forEach(p => {
     const tr = document.createElement('tr');
+
     tr.innerHTML = `
+      <td><input type="checkbox" class="chkProveedor"></td>
       <td>${p.idProveedor}</td>
       <td>${p.nombre}</td>
       <td>${p.rut}</td>
       <td>${p.correo}</td>
     `;
+
+    const chk = tr.querySelector(".chkProveedor");
+
+    // ============================
+    // EVENTO DEL CHECKBOX
+    // ============================
+    chk.addEventListener("change", () => {
+
+      if (chk.checked) {
+
+        // 1) Desmarcar los otros checkboxes
+        document.querySelectorAll(".chkProveedor").forEach(c => {
+          if (c !== chk) c.checked = false;
+        });
+
+        // 2) Guardar el ID del proveedor seleccionado
+        document.getElementById("idProveedorActual").value = p.idProveedor;
+
+        // 3) Mostrar panel superior
+        document.getElementById("accionesProveedor").classList.remove("hidden");
+
+        // 4) Mostrar nombre del proveedor
+        document.getElementById("proveedorSeleccionado").innerText =
+          `Proveedor seleccionado: ${p.nombre}`;
+
+        // 5) Resaltar fila seleccionada
+        marcarFilaSeleccionada(tr);
+
+      } else {
+
+        // DESSELECCIÓN: ocultar el panel
+        document.getElementById("accionesProveedor").classList.add("hidden");
+        document.getElementById("idProveedorActual").value = "";
+        document.getElementById("proveedorSeleccionado").innerText = "";
+        quitarResaltado();
+      }
+    });
+
+
+    // ============================
+    // EVENTO AL CLICKEAR LA FILA
+    // ============================
+    tr.addEventListener('click', (e) => {
+
+      // 👉 Evitar conflicto si el click fue sobre el checkbox
+      if (e.target.classList.contains("chkProveedor")) return;
+
+      // Seleccionar el checkbox automáticamente
+      chk.checked = true;
+
+      // Desmarcar los demás
+      document.querySelectorAll(".chkProveedor").forEach(c => {
+        if (c !== chk) c.checked = false;
+      });
+
+      // Guardar ID
+      document.getElementById("idProveedorActual").value = p.idProveedor;
+
+      // Mostrar panel
+      document.getElementById("accionesProveedor").classList.remove("hidden");
+
+      // Mostrar nombre en panel
+      document.getElementById("proveedorSeleccionado").innerText =
+        `Proveedor seleccionado: ${p.nombre}`;
+
+      // Resaltar fila
+      marcarFilaSeleccionada(tr);
+    });
+
     tbody.appendChild(tr);
   });
 }
@@ -81,7 +157,7 @@ function guardarProveedor() {
     return;
   }
 
-  fetch('../../api-stock/public/proveedores.php', {
+  fetch('../../api-stock/public/proveedores.php', {  // 👈 RUTA CORRECTA
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ nombre, rut, correo })
@@ -109,4 +185,16 @@ function guardarProveedor() {
       msg.classList.remove('hidden');
       msg.classList.add('message-error');
     });
+}
+
+function marcarFilaSeleccionada(fila) {
+  document.querySelectorAll("#tablaProveedores tbody tr")
+    .forEach(tr => tr.classList.remove("fila-seleccionada"));
+
+  fila.classList.add("fila-seleccionada");
+}
+
+function quitarResaltado() {
+  document.querySelectorAll("#tablaProveedores tbody tr")
+    .forEach(tr => tr.classList.remove("fila-seleccionada"));
 }

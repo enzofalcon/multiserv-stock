@@ -33,11 +33,21 @@
     </button>
   </div>
 
+  <!-- Panel de acciones del proveedor seleccionado (ahora va ARRIBA) -->
+  <div id="accionesProveedor" class="actions-bar hidden">
+    <span id="proveedorSeleccionado" class="selected-info"></span>
+
+    <button id="btnEditarProveedor" class="btn btn-primary">Editar</button>
+    <button id="btnEliminarProveedor" class="btn btn-danger">Eliminar</button>
+    <button id="btnDireccionProveedor" class="btn btn-secondary">Dirección</button>
+  </div>
+
   <!-- Tabla -->
   <div class="table-wrapper">
     <table class="table" id="tablaProveedores">
       <thead>
         <tr>
+          <th></th>
           <th>ID</th>
           <th>Nombre</th>
           <th>RUT</th>
@@ -52,10 +62,10 @@
 
 </main>
 
+
 <!-- Modal: Nuevo Proveedor -->
 <div id="modalProveedor" class="modal hidden">
-  <div class="modal-overlay"></div>
-
+  <div class="modal-overlay">
   <div class="modal-content">
     <div class="modal-header">
       <h2>Nuevo proveedor</h2>
@@ -86,9 +96,71 @@
       <button id="btnGuardarProveedor" class="btn btn-primary">Guardar</button>
     </div>
   </div>
+  </div>
 </div>
 
+<div id="modalDireccion" class="modal hidden">
+  <div class="modal-overlay"></div>
+
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Dirección del proveedor</h2>
+      <button onclick="cerrarModalDireccion()" class="btn-close">×</button>
+    </div>
+
+    <div class="modal-body">
+      <form id="formDireccion">
+        <input type="hidden" id="idDireccionProv">
+
+        <div class="form-group">
+          <label>Departamento</label>
+          <input type="text" id="departamento" required>
+        </div>
+
+        <div class="form-group">
+          <label>Localidad</label>
+          <input type="text" id="localidad" required>
+        </div>
+
+        <div class="form-group">
+          <label>Calle principal</label>
+          <input type="text" id="callePrincipal" required>
+        </div>
+
+        <div class="form-group">
+          <label>Número</label>
+          <input type="text" id="numero">
+        </div>
+
+        <div class="form-group">
+          <label>Calle intersección</label>
+          <input type="text" id="calleInterseccion">
+        </div>
+
+        <div class="form-group">
+          <label>Observación</label>
+          <input type="text" id="observacion">
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" onclick="cerrarModalDireccion()" class="btn btn-secondary">
+        Cancelar
+      </button>
+      <button type="submit" form="formDireccion" class="btn btn-primary">
+        Guardar
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<input type="hidden" id="idProveedorActual">
+
+
 <script src="../js/proveedores.js"></script>
+<script src="../js/direccionProveedor.js"></script>
 
 </body>
 </html>
