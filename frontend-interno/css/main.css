@@ -70,10 +70,15 @@ header h1 {
 
 /* ---------- Acciones superiores ---------- */
 .actions-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.global-actions {
+    justify-content: space-between; /* Botones bien ubicados */
+    margin-bottom: 20px;
 }
 
 /* ---------- Buscador ---------- */

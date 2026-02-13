@@ -27,10 +27,14 @@
 <main class="main-container">
 
   <!-- Barra de acciones -->
-  <div class="actions-bar">
+  <div class="actions-bar global-actions">
     <button id="btnNuevoProveedor" class="btn btn-primary">
       Nuevo proveedor
     </button>
+      <button id="btnToggleInactivos" class="btn btn-secondary">
+    Mostrar inactivos
+  </button>
+</div>
   </div>
 
   <!-- Panel de acciones del proveedor seleccionado (ahora va ARRIBA) -->
@@ -42,9 +46,6 @@
     <button id="btnDireccionProveedor" class="btn btn-secondary">Dirección</button>
   </div>
 
-  <button id="btnToggleInactivos" class="btn btn-secondary">
-  Mostrar inactivos
-  </button>
   <!-- Tabla -->
   <div class="table-wrapper">
     <table class="table" id="tablaProveedores">
