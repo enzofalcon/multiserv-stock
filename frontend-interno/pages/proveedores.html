@@ -42,17 +42,21 @@
     <button id="btnDireccionProveedor" class="btn btn-secondary">Dirección</button>
   </div>
 
+  <button id="btnToggleInactivos" class="btn btn-secondary">
+  Mostrar inactivos
+  </button>
   <!-- Tabla -->
   <div class="table-wrapper">
     <table class="table" id="tablaProveedores">
       <thead>
         <tr>
-          <th></th>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>RUT</th>
-          <th>Correo</th>
-        </tr>
+        <th></th>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>RUT</th>
+        <th>Correo</th>
+        <th>Estado</th>
+      </tr>
       </thead>
       <tbody>
         <!-- JS cargará aquí -->
@@ -65,7 +69,9 @@
 
 <!-- Modal: Nuevo Proveedor -->
 <div id="modalProveedor" class="modal hidden">
-  <div class="modal-overlay">
+
+  <div class="modal-overlay"></div>
+
   <div class="modal-content">
     <div class="modal-header">
       <h2>Nuevo proveedor</h2>
@@ -76,17 +82,17 @@
       <div id="mensajeProveedor" class="message hidden"></div>
 
       <div class="form-group">
-        <label for="nombreProveedor">Nombre</label>
+        <label>Nombre</label>
         <input type="text" id="nombreProveedor">
       </div>
 
       <div class="form-group">
-        <label for="rutProveedor">RUT</label>
+        <label>RUT</label>
         <input type="text" id="rutProveedor">
       </div>
 
       <div class="form-group">
-        <label for="correoProveedor">Correo</label>
+        <label>Correo</label>
         <input type="email" id="correoProveedor">
       </div>
     </div>
@@ -96,8 +102,9 @@
       <button id="btnGuardarProveedor" class="btn btn-primary">Guardar</button>
     </div>
   </div>
-  </div>
+
 </div>
+
 
 <div id="modalDireccion" class="modal hidden">
   <div class="modal-overlay"></div>
