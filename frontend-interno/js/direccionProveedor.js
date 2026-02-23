@@ -45,7 +45,7 @@ btnGuardarDireccion.addEventListener("click", (e) => {
 // Cargar dirección (GET)
 // ===============================
 function cargarDireccion(idProveedor) {
-  fetch(`/multiserv-stock/api-stock/public/direccion_proveedor.php?idProveedor=${idProveedor}`)
+  fetch(`${API_BASE}direccion_proveedor.php?idProveedor=${idProveedor}`)
     .then(res => res.json())
     .then(data => {
       if (data) {
@@ -82,7 +82,7 @@ document.getElementById("formDireccion").addEventListener("submit", function (e)
     observacion: observacion.value
   };
 
-  let url = "/multiserv-stock/api-stock/public/direccion_proveedor.php";
+  let url = API_BASE + "direccion_proveedor.php";
   let method = "POST";
 
   if (modoEdicion) {

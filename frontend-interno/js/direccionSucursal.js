@@ -18,7 +18,7 @@ function cerrarModalDireccionSucursal() {
 // ============================
 
 function cargarDireccionSucursal(idSucursal) {
-  fetch(`/multiserv-stock/api-stock/public/direccion_sucursal.php?idSucursal=${idSucursal}`)
+  fetch(`${API_BASE}direccion_sucursal.php?idSucursal=${idSucursal}`)
     .then(res => res.json())
     .then(data => {
 
@@ -64,7 +64,7 @@ document.getElementById("formDireccionSucursal").addEventListener("submit", e =>
     observacion: observacionSuc.value
   };
 
-  let url = "/multiserv-stock/api-stock/public/direccion_sucursal.php";
+  let url = API_BASE + "direccion_sucursal.php";
   let method = "POST";
 
   if (modoEdicionSuc) {
