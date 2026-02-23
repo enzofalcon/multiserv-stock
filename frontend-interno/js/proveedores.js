@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Cargar tabla
 // ======================================================
 function cargarProveedores() {
-  fetch('../../api-stock/public/proveedores.php')
+  fetch(API_BASE + 'proveedores.php')
     .then(res => res.json())
     .then(data => renderTablaProveedores(data))
     .catch(() => alert('Error cargando proveedores'));
@@ -217,7 +217,7 @@ function guardarProveedor() {
     return;
   }
 
-  let url = '../../api-stock/public/proveedores.php';
+  let url = API_BASE + 'proveedores.php';
   let method = 'POST';
 
   // 🔥 SI ESTAMOS EDITANDO
@@ -340,7 +340,7 @@ function eliminarProveedor() {
 
   if (!confirm(mensaje)) return;
 
-  fetch(`../../api-stock/public/proveedores.php?idProveedor=${id}`, {
+  fetch(`${API_BASE}proveedores.php?idProveedor=${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ estado: nuevoEstado })
@@ -363,7 +363,7 @@ function eliminarProveedor() {
 
 function reactivarProveedor(id) {
 
-  fetch(`../../api-stock/public/proveedores.php?idProveedor=${id}`, {
+  fetch(`${API_BASE}proveedores.php?idProveedor=${id}`, {
     method: 'PUT',
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ estado: "activo" })

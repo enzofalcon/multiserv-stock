@@ -55,7 +55,7 @@ document
 // LISTADO DE PRODUCTOS
 // ==================================================
 function cargarProductos() {
-  fetch('http://localhost/multiserv-stock/api-stock/public/productos.php')
+    fetch(API_BASE + 'productos.php')
     .then(res => res.json())
     .then(data => renderTablaProductos(data))
     .catch(() => alert('Error al cargar productos'));
@@ -125,7 +125,7 @@ function guardarProducto() {
   boton.disabled = true;
   boton.innerText = 'Guardando...';
 
-  fetch('http://localhost/multiserv-stock/api-stock/public/productos.php', {
+    fetch(API_BASE + 'productos.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ descripcion })
@@ -180,7 +180,7 @@ function verDisponibilidad(idProducto, descripcion) {
 
   cargarSucursales();
 
-  fetch('http://localhost/multiserv-stock/api-stock/public/disponibilidad.php')
+    fetch(API_BASE + 'disponibilidad.php')
     .then(res => res.json())
     .then(data => {
       const filtrados = data.filter(d => d.idProducto === idProducto);
@@ -249,7 +249,7 @@ function cargarSucursales() {
   // Limpiar opciones anteriores
   select.innerHTML = '<option value="">Seleccionar sucursal</option>';
 
-  fetch('http://localhost/multiserv-stock/api-stock/public/sucursales.php')
+  fetch(API_BASE + 'sucursales.php')
     .then(res => res.json())
     .then(data => {
       data.forEach(s => {
@@ -279,7 +279,7 @@ function guardarStockInicial() {
     return;
   }
 
-  fetch('http://localhost/multiserv-stock/api-stock/public/disponibilidad.php', {
+  fetch(API_BASE + 'disponibilidad.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -316,7 +316,7 @@ function guardarStockInicial() {
 
 
 function recargarDisponibilidad() {
-  fetch('http://localhost/multiserv-stock/api-stock/public/disponibilidad.php')
+  fetch(API_BASE + 'disponibilidad.php')
     .then(res => res.json())
     .then(data => {
       const filtrados = data.filter(d => d.idProducto === productoActivoId);
@@ -354,7 +354,7 @@ function abrirModalCosto(idProducto, descripcion) {
 
 
 function cargarProveedoresCosto() {
-  fetch('../../api-stock/public/proveedores.php')
+  fetch(API_BASE + 'proveedores.php')
     .then(res => res.json())
     .then(data => {
       const select = document.getElementById('proveedorCosto');
@@ -391,7 +391,7 @@ function guardarCosto() {
     return;
   }
 
-  fetch('../../api-stock/public/registro_costo.php', {
+  fetch(API_BASE + 'registro_costo.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Cargar sucursales
 // ===============================
 function cargarSucursales() {
-  fetch('../../api-stock/public/sucursales.php')
+  fetch(API_BASE + 'sucursales.php')
     .then(res => res.json())
     .then(data => renderSucursales(data))
     .catch(() => alert("Error cargando sucursales"));
@@ -121,7 +121,7 @@ function guardarSucursal() {
     return;
   }
 
-  fetch('../../api-stock/public/sucursales.php', {
+  fetch(API_BASE + 'sucursales.php', {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ numSucursal: numero, correo, telefono })
