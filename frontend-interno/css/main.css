@@ -1,10 +1,9 @@
 /* =========================================================
    Multiserv Stock – Estilos base del sistema
-   Archivo: main.css
-   Rol: Capa de presentación (frontend interno)
+   Archivo: main.css (VERSIÓN ORGANIZADA Y CORREGIDA)
    ========================================================= */
 
-/* ---------- Variables globales ---------- */
+/* ------------------- VARIABLES GLOBALES ------------------- */
 :root {
   /* Colores institucionales */
   --color-primary: #0B5FA5;
@@ -24,18 +23,16 @@
   --color-error: #DC2626;
   --color-warning: #F59E0B;
 
-  /* Tipografía */
-  --font-main: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-
   /* UI */
   --radius: 6px;
   --shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+
+  /* Fuente */
+  --font-main: 'Inter', system-ui, sans-serif;
 }
 
-/* ---------- Reset / base ---------- */
-* {
-  box-sizing: border-box;
-}
+/* ------------------- RESET ------------------- */
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -45,20 +42,122 @@ body {
   line-height: 1.5;
 }
 
-/* ---------- Header ---------- */
+/* =========================================================
+   ELIMINAR EL HEADER VIEJO DEL SISTEMA
+   (Este era el que rompía el diseño)
+   ========================================================= */
 header {
-  background-color: var(--color-primary);
-  color: #ffffff;
-  padding: 1rem 2rem;
+  all: unset;
+  display: block;
 }
 
-header h1 {
-  margin: 0;
-  font-size: 1.2rem;
+/* =========================================================
+   NUEVO HEADER MULTISERV – CORRIGIDO
+   ========================================================= */
+
+/* Layout simétrico 240px | centro | 240px */
+.ms-header {
+  display: grid;
+  grid-template-columns: 240px 1fr 240px;
+  align-items: center;
+  background-color: var(--color-primary);
+  color: #fff;
+  padding: 0.6rem 1.5rem;
+  height: 58px;
+}
+
+/* ----- IZQUIERDA (logo + título dinámico) ----- */
+.ms-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  overflow: hidden; /* evita saltos */
+  white-space: nowrap;
+}
+
+.ms-logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+}
+
+#ms-page-title {
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+/* ----- CENTRO (menú centrado de verdad) ----- */
+.ms-header-center {
+  display: flex;
+  justify-content: center;
+}
+
+.ms-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.ms-nav a {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius);
+  transition: 0.2s;
+}
+
+.ms-nav a.active {
+  background-color: #3b82f6;
   font-weight: 600;
 }
 
-/* ---------- Layout ---------- */
+.ms-nav a:hover {
+  background-color: rgba(255,255,255,0.15);
+}
+
+/* ----- DERECHA (login) ----- */
+.ms-header-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ms-login-btn {
+  background: #fff;
+  color: var(--color-primary);
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ----- Breadcrumb ----- */
+.ms-breadcrumb {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: #e5e7eb;
+  display: none !important;
+  gap: 0.35rem;
+  padding-left: 1.5rem;
+}
+
+.ms-breadcrumb a {
+  color: #666;
+  text-decoration: none;
+}
+
+.ms-breadcrumb .current {
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   CONTENEDORES GENERALES
+   ========================================================= */
+
 .main-container {
   max-width: 1200px;
   margin: 2rem auto;
@@ -68,34 +167,42 @@ header h1 {
   box-shadow: var(--shadow);
 }
 
-/* ---------- Acciones superiores ---------- */
+/* =========================================================
+   ACCIONES SUPERIORES
+   ========================================================= */
+
 .actions-bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .global-actions {
-    justify-content: space-between; /* Botones bien ubicados */
-    margin-bottom: 20px;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
-/* ---------- Buscador ---------- */
+/* =========================================================
+   BUSCADOR
+   ========================================================= */
+
 .search-input {
   padding: 0.5rem 0.75rem;
   border-radius: var(--radius);
   border: 1px solid #D1D5DB;
-  font-size: 0.9rem;
   width: 250px;
+  font-size: 0.9rem;
 }
-
 .search-input:focus {
   outline: none;
   border-color: var(--color-primary);
 }
 
-/* ---------- Botones ---------- */
+/* =========================================================
+   BOTONES
+   ========================================================= */
+
 .btn {
   padding: 0.5rem 1rem;
   border-radius: var(--radius);
@@ -105,29 +212,24 @@ header h1 {
   font-weight: 500;
 }
 
-.btn-primary {
-  background-color: var(--color-primary);
-  color: #ffffff;
-}
-
-.btn-secondary {
-  background-color: var(--color-secondary);
-  color: #ffffff;
-}
+.btn-primary { background-color: var(--color-primary); color: white; }
+.btn-secondary { background-color: var(--color-secondary); color: white; }
 
 .btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-/* ---------- Tabla ---------- */
+/* =========================================================
+   TABLAS
+   ========================================================= */
+
 table {
   width: 100%;
   border-collapse: collapse;
 }
 
-th,
-td {
+th, td {
   padding: 0.75rem;
   text-align: left;
 }
@@ -139,22 +241,16 @@ th {
   border-bottom: 2px solid #E5E7EB;
 }
 
-td {
-  border-bottom: 1px solid #E5E7EB;
-}
+td { border-bottom: 1px solid #E5E7EB; }
 
-/* ---------- Estados de stock ---------- */
-.stock-ok {
-  color: var(--color-success);
-  font-weight: 600;
-}
+/* Estados */
+.stock-ok { color: var(--color-success); font-weight: 600; }
+.stock-low { color: var(--color-error); font-weight: 600; }
 
-.stock-low {
-  color: var(--color-error);
-  font-weight: 600;
-}
+/* =========================================================
+   MENSAJES
+   ========================================================= */
 
-/* ---------- Mensajes ---------- */
 .message {
   padding: 0.75rem 1rem;
   border-radius: var(--radius);
@@ -172,10 +268,11 @@ td {
   color: var(--color-error);
 }
 
-/* ---------- Formularios (futuro Producto / Proveedor) ---------- */
-.form-group {
-  margin-bottom: 1rem;
-}
+/* =========================================================
+   FORMULARIOS
+   ========================================================= */
+
+.form-group { margin-bottom: 1rem; }
 
 label {
   display: block;
@@ -184,8 +281,7 @@ label {
   margin-bottom: 0.25rem;
 }
 
-input,
-select {
+input, select {
   width: 100%;
   padding: 0.5rem 0.75rem;
   border-radius: var(--radius);
@@ -193,103 +289,43 @@ select {
   font-size: 0.9rem;
 }
 
-input:focus,
-select:focus {
+input:focus, select:focus {
   outline: none;
   border-color: var(--color-primary);
 }
 
 /* =========================================================
-   Responsive – ajustes mobile
+   MODALES
    ========================================================= */
 
-@media (max-width: 768px) {
-
-  .main-container {
-    margin: 1rem;
-    padding: 1rem;
-  }
-
-  .actions-bar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
-  }
-
-  .search-input {
-    width: 100%;
-  }
-
-  .table-wrapper {
-    overflow-x: auto;
-  }
-
-  table {
-    min-width: 600px;
-  }
-
-  header {
-    padding: 1rem;
-  }
-
-  header h1 {
-    font-size: 1rem;
-  }
-}
-
 .modal {
   position: fixed;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.5); /* overlay */
+  background: rgba(0,0,0,0.5);
   z-index: 1000;
 }
 
-.modal.hidden {
-  display: none;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-
-/* ---------- Modal (Lightbox) ---------- */
-.modal {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal.hidden {
-  display: none;
-}
+.modal.hidden { display: none; }
 
 .modal-overlay {
   position: absolute;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0,0,0,0.5);
 }
 
 .modal-content {
-  position: relative;
   background-color: var(--color-surface);
   border-radius: var(--radius);
-  width: 90%;            /* ✔ se centra */
+  width: 90%;
   max-width: 420px;
-  margin: 0 auto;        /* ✔ asegura centrado */
+  padding-bottom: 1rem;
   box-shadow: var(--shadow);
+  position: relative;
   z-index: 1;
 }
-
 
 .modal-header,
 .modal-footer {
@@ -310,9 +346,7 @@ select:focus {
   gap: 0.5rem;
 }
 
-.modal-body {
-  padding: 1rem;
-}
+.modal-body { padding: 1rem; }
 
 .btn-close {
   background: none;
@@ -321,23 +355,51 @@ select:focus {
   cursor: pointer;
 }
 
+/* =========================================================
+   ESTADOS DE FILA
+   ========================================================= */
 
-.fila-activa {
-  background-color: #dbeafe !important;
-}
+.fila-activa { background-color: #dbeafe !important; }
+.estado-activo { color: var(--color-success); font-weight: 600; }
+.estado-inactivo { color: var(--color-error); font-weight: 600; opacity: 0.7; }
+.fila-inactiva { opacity: 0.5; background-color: #f8d7da; }
 
-.estado-activo {
-  color: var(--color-success);
-  font-weight: 600;
-}
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
 
-.estado-inactivo {
-  color: var(--color-error);
-  font-weight: 600;
-  opacity: 0.7;
-}
+@media (max-width: 768px) {
+  .main-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
 
-.fila-inactiva {
-  opacity: 0.5;
-  background-color: #f8d7da;
+  .actions-bar {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+  table {
+    min-width: 600px;
+  }
+
+  .ms-header {
+    grid-template-columns: 1fr;
+    height: auto;
+    padding-bottom: 1rem;
+  }
+
+  .ms-header-center {
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+  }
+
+  .ms-header-right {
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+  }
 }

@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Multiserv Stock – Productos</title>
+  <title>Multiserv Stock – Inicio</title>
 
   <!-- Tipografía -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,21 +15,20 @@
   <!-- CSS -->
   <link rel="stylesheet" href="css/main.css">
 </head>
+
 <body>
 
-  <header><div class="menu">
-    <h1>Multiserv Stock</h1>
-    <div class="menu">
-      <a href="pages/productos.html" class="btn btn-primary">Productos</a>
-      <a href="pages/proveedores.html" class="btn btn-primary">Proveedores</a>
-      <a href="pages/sucursales.html" class="btn btn-primary">Sucursales</a>
-      <a href="pages/stock.html" class="btn btn-primary">Stock</a>
-    </div>
-  </header>
+  <!-- Header dinámico -->
+  <div id="header-container"></div>
 
+  <!-- Contenido principal -->
   <main class="main-container">
 
-    <!-- Barra de acciones -->
+    <h2>Bienvenido al sistema</h2>
+
+    <p>Este es el panel principal. Seleccione una sección desde el menú superior.</p>
+
+    <!-- Tabla de productos como vista rápida -->
     <div class="actions-bar">
       <input
         type="text"
@@ -41,17 +40,12 @@
       <a href="pages/productos.html" class="btn btn-primary">
         Agregar producto
       </a>
-
-
-
-
     </div>
 
-    <!-- Tabla -->
     <div class="table-wrapper">
       <table>
         <thead>
-        <tr>
+          <tr>
             <th>Id</th>
             <th>Descripción</th>
             <th>Stock total</th>
@@ -61,8 +55,9 @@
             <th>Stock mínimo</th>
             <th>Estado</th>
             <th>Acciones</th>
-        </tr>
-</thead>
+          </tr>
+        </thead>
+
         <tbody id="tabla-productos">
           <!-- Se carga por JS -->
         </tbody>
@@ -71,49 +66,54 @@
 
   </main>
 
-  <!-- JS -->
+  <!-- Header dinámico JS -->
+  <script src="components/headerLoader.js"></script>
   <script>
-  const tabla = document.getElementById("tabla-productos");
+    cargarHeader("inicio");
+  </script>
 
-  fetch("http://localhost/multiserv-stock/api-stock/public/productos.php")
-    .then(response => response.json())
-    .then(productos => {
+  <!-- Script actual de productos -->
+  <script>
+    const tabla = document.getElementById("tabla-productos");
 
-      tabla.innerHTML = "";
+    fetch("http://localhost/multiserv-stock/api-stock/public/productos.php")
+      .then(response => response.json())
+      .then(productos => {
 
-      productos.forEach(p => {
+        tabla.innerHTML = "";
 
-        const stockTotal = p.stock_total ?? 0;
-        const stockMin = p.stock_minimo ?? 0;
+        productos.forEach(p => {
 
-        const estado = (stockTotal <= stockMin)
-          ? "Bajo stock"
-          : "Normal";
+          const stockTotal = p.stock_total ?? 0;
+          const stockMin = p.stock_minimo ?? 0;
 
-        const fila = document.createElement("tr");
-        fila.innerHTML = `
-          <td>${p.codigo}</td>
-          <td>${p.descripcion}</td>
-          <td>${stockTotal}</td>
-          <td>${p.stock_s1 ?? 0}</td>
-          <td>${p.stock_s2 ?? 0}</td>
-          <td>${p.stock_s3 ?? 0}</td>
-          <td>${stockMin}</td>
-          <td>${estado}</td>
-          <td>
-            <button class="btn btn-secondary" disabled>Editar</button>
-          </td>
-        `;
+          const estado = (stockTotal <= stockMin)
+            ? "Bajo stock"
+            : "Normal";
 
-        tabla.appendChild(fila);
+          const fila = document.createElement("tr");
+          fila.innerHTML = `
+            <td>${p.codigo}</td>
+            <td>${p.descripcion}</td>
+            <td>${stockTotal}</td>
+            <td>${p.stock_s1 ?? 0}</td>
+            <td>${p.stock_s2 ?? 0}</td>
+            <td>${p.stock_s3 ?? 0}</td>
+            <td>${stockMin}</td>
+            <td>${estado}</td>
+            <td>
+              <button class="btn btn-secondary" disabled>Editar</button>
+            </td>
+          `;
+
+          tabla.appendChild(fila);
+        });
+
+      })
+      .catch(error => {
+        console.error("Error al cargar productos:", error);
       });
-
-    })
-    .catch(error => {
-      console.error("Error al cargar productos:", error);
-    });
-</script>
-
+  </script>
 
 </body>
 </html>

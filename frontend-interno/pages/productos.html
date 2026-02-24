@@ -6,195 +6,184 @@
 
   <link rel="stylesheet" href="../css/main.css">
 </head>
+
 <body>
 
-<header>
-  <h1>Gestión de Productos</h1>
+  <!-- Header dinámico -->
+  <div id="header-container"></div>
 
-  <nav class="menu">
-    <a href="../index.html" class="btn btn-secondary">Inicio</a>
-    <a href="proveedores.html" class="btn btn-secondary">Proveedores</a>
-    <a href="sucursales.html" class="btn btn-secondary">Sucursales</a>
-  </nav>
-</header>
+  <!-- Contenido principal -->
+  <main class="main-container">
 
-<main class="main-container">
+    <h2>Gestión de productos</h2>
 
-  <div class="actions-bar">
-    <input
-      type="text"
-      id="searchProducto"
-      class="search-input"
-      placeholder="Buscar producto..."
-    >
+    <div class="actions-bar">
+      <input
+        type="text"
+        id="searchProducto"
+        class="search-input"
+        placeholder="Buscar producto..."
+      >
 
-    <button id="btnNuevoProducto" class="btn btn-primary">
-      Nuevo producto
-    </button>
-  </div>
-
-  <div class="table-wrapper">
-    <table id="tablaProductos">
-      <thead>
-      <tr>
-        <th>ID</th>
-        <th>Descripción</th>
-        <th>Stock total</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-
-      <tbody>
-        <!-- Se carga por JS -->
-      </tbody>
-    </table>
-  </div>
-
-</main>
-
-
-<!-- Lightbox Disponibilidad -->
-<div id="modalDisponibilidad" class="modal hidden">
-  <div class="modal-overlay"></div>
-
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2 id="tituloDisponibilidad">Disponibilidad</h2>
-      <button id="cerrarModalDisponibilidad" class="btn-close">×</button>
+      <button id="btnNuevoProducto" class="btn btn-primary">
+        Nuevo producto
+      </button>
     </div>
 
-    <div class="modal-body">
-
-      <!-- Tabla de disponibilidad -->
-      <table>
+    <div class="table-wrapper">
+      <table id="tablaProductos">
         <thead>
           <tr>
-            <th>Sucursal</th>
-            <th>Cantidad</th>
+            <th>ID</th>
+            <th>Descripción</th>
+            <th>Stock total</th>
+            <th>Acciones</th>
           </tr>
         </thead>
-        <tbody id="tablaDisponibilidad">
-          <!-- filas por JS -->
+
+        <tbody>
+          <!-- Se carga dinámicamente -->
         </tbody>
       </table>
+    </div>
 
-      <hr>
+  </main>
 
-      <!-- Formulario carga stock -->
-      <h3>Cargar stock inicial</h3>
+  <!-- Modal Disponibilidad -->
+  <div id="modalDisponibilidad" class="modal hidden">
+    <div class="modal-overlay"></div>
 
-      <p class="help-text">
-        Este valor reemplaza el stock actual de la sucursal seleccionada.
-      </p>
-
-      <div class="form-group">
-        <label for="idSucursal">Sucursal</label>
-        <select id="idSucursal">
-          <option value="">Seleccionar sucursal</option>
-        </select>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="tituloDisponibilidad">Disponibilidad</h2>
+        <button id="cerrarModalDisponibilidad" class="btn-close">×</button>
       </div>
 
-      <div class="form-group">
-        <label for="cantidadStock">Cantidad</label>
-        <input
-          type="number"
-          id="cantidadStock"
-          min="1"
-          placeholder="Cantidad a ingresar"
-        >
+      <div class="modal-body">
+
+        <table>
+          <thead>
+            <tr>
+              <th>Sucursal</th>
+              <th>Cantidad</th>
+            </tr>
+          </thead>
+          <tbody id="tablaDisponibilidad"></tbody>
+        </table>
+
+        <hr>
+
+        <h3>Cargar stock inicial</h3>
+
+        <p class="help-text">
+          Este valor reemplaza el stock actual de la sucursal seleccionada.
+        </p>
+
+        <div class="form-group">
+          <label for="idSucursal">Sucursal</label>
+          <select id="idSucursal">
+            <option value="">Seleccionar sucursal</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="cantidadStock">Cantidad</label>
+          <input
+            type="number"
+            id="cantidadStock"
+            min="1"
+            placeholder="Cantidad a ingresar"
+          >
+        </div>
+
+        <button class="btn btn-primary" id="btnGuardarStock">
+          Establecer stock
+        </button>
+
+        <div id="mensajeStock" class="message hidden"></div>
+
       </div>
-
-      <button
-        class="btn btn-primary"
-        id="btnGuardarStock"
-      >
-        Establecer stock
-      </button>
-
-      <div id="mensajeStock" class="message hidden"></div>
-
     </div>
   </div>
-</div>
 
+  <!-- Modal Nuevo Producto -->
+  <div id="modalNuevoProducto" class="modal hidden">
+    <div class="modal-overlay"></div>
 
-
-
-<!-- Modal: Nuevo Producto -->
-<div id="modalNuevoProducto" class="modal hidden">
-  <div class="modal-overlay"></div>
-
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2>Nuevo producto</h2>
-      <button id="cerrarModalProducto" class="btn-close">×</button>
-    </div>
-
-    <div class="modal-body">
-      <div id="mensajeProducto" class="message hidden"></div>
-
-      <div class="form-group">
-        <label for="descripcionProducto">Descripción</label>
-        <input
-          type="text"
-          id="descripcionProducto"
-          placeholder="Ej: Teclado inalámbrico"
-        />
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Nuevo producto</h2>
+        <button id="cerrarModalProducto" class="btn-close">×</button>
       </div>
-    </div>
 
+      <div class="modal-body">
+        <div id="mensajeProducto" class="message hidden"></div>
 
-    <div class="modal-footer">
-      <button id="btnCancelarProducto" class="btn btn-secondary">
-        Cancelar
-      </button>
-      <button id="btnGuardarProducto" class="btn btn-primary">
-        Guardar
-      </button>
+        <div class="form-group">
+          <label for="descripcionProducto">Descripción</label>
+          <input
+            type="text"
+            id="descripcionProducto"
+            placeholder="Ej: Teclado inalámbrico"
+          />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="btnCancelarProducto" class="btn btn-secondary">Cancelar</button>
+        <button id="btnGuardarProducto" class="btn btn-primary">Guardar</button>
+      </div>
     </div>
   </div>
-</div>
 
+  <!-- Modal Agregar Costo -->
+  <div id="modalCosto" class="modal hidden">
+    <div class="modal-overlay"></div>
 
-<!-- Modal: Agregar Costo -->
-<div id="modalCosto" class="modal hidden">
-  <div class="modal-overlay"></div>
-
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2 id="tituloCosto">Agregar costo</h2>
-      <button id="cerrarModalCosto" class="btn-close">×</button>
-    </div>
-
-    <div class="modal-body">
-      <div id="mensajeCosto" class="message hidden"></div>
-
-      <div class="form-group">
-        <label for="proveedorCosto">Proveedor</label>
-        <select id="proveedorCosto">
-          <option value="">Seleccione proveedor</option>
-        </select>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="tituloCosto">Agregar costo</h2>
+        <button id="cerrarModalCosto" class="btn-close">×</button>
       </div>
 
-      <div class="form-group">
-        <label for="costoProducto">Costo</label>
-        <input type="number" id="costoProducto" min="1" step="0.01" placeholder="Ej: 120.50" />
+      <div class="modal-body">
+        <div id="mensajeCosto" class="message hidden"></div>
+
+        <div class="form-group">
+          <label for="proveedorCosto">Proveedor</label>
+          <select id="proveedorCosto">
+            <option value="">Seleccione proveedor</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="costoProducto">Costo</label>
+          <input type="number" id="costoProducto" min="1" step="0.01" placeholder="Ej: 120.50" />
+        </div>
+
+        <div class="form-group">
+          <label for="ivaProducto">IVA (%)</label>
+          <input type="number" id="ivaProducto" min="0" max="30" value="22" />
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="ivaProducto">IVA (%)</label>
-        <input type="number" id="ivaProducto" min="0" max="30" value="22" />
+      <div class="modal-footer">
+        <button id="btnCancelarCosto" class="btn btn-secondary">Cancelar</button>
+        <button id="btnGuardarCosto" class="btn btn-primary">Guardar</button>
       </div>
-    </div>
-
-    <div class="modal-footer">
-      <button id="btnCancelarCosto" class="btn btn-secondary">Cancelar</button>
-      <button id="btnGuardarCosto" class="btn btn-primary">Guardar</button>
     </div>
   </div>
-</div>
 
-<script src="../js/config.js"></script>
-<script src="../js/productos.js"></script>
+  <!-- Scripts -->
+  <script src="../components/headerLoader.js"></script>
+  <script>
+  cargarHeader("productos", [
+      { label: "Productos", url: "../pages/productos.html" }
+  ]);
+  </script>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/productos.js"></script>
+
 </body>
 </html>
