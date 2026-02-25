@@ -55,9 +55,23 @@ document
 // LISTADO DE PRODUCTOS
 // ==================================================
 function cargarProductos() {
+
     fetch(API_BASE + 'productos.php')
-    .then(res => res.json())
-    .then(data => renderTablaProductos(data))
+    .then(res => {
+
+        if (res.status === 401) {
+            window.location.href = '../login.html';
+            return;
+        }
+
+        return res.json();
+    })
+    .then(data => {
+
+        if (!data) return;
+
+        renderTablaProductos(data);
+    })
     .catch(() => alert('Error al cargar productos'));
 }
 

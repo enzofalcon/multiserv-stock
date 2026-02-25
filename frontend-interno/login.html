@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Multiserv Stock</title>
+</head>
+<body>
+
+  <h2>Iniciar sesión</h2>
+
+  <form id="formLogin">
+    <input type="email" id="email" placeholder="Email" required>
+    <br><br>
+    <input type="password" id="password" placeholder="Contraseña" required>
+    <br><br>
+    <button type="submit">Ingresar</button>
+  </form>
+
+  <p id="mensaje"></p>
+
+  <script>
+    document.getElementById("formLogin").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      fetch("../api-stock/public/login.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      })
+      .then(res => res.json())
+        .then(data => {
+        if (data.success) {
+            window.location.href = "index.html";
+        } else {
+            document.getElementById("mensaje").innerText = data.error;
+        }
+        })
+      .catch(() => {
+        document.getElementById("mensaje").innerText = "Error de conexión";
+      });
+    });
+  </script>
+
+</body>
+</html>

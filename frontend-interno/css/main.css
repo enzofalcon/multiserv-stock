@@ -42,10 +42,7 @@ body {
   line-height: 1.5;
 }
 
-/* =========================================================
-   ELIMINAR EL HEADER VIEJO DEL SISTEMA
-   (Este era el que rompía el diseño)
-   ========================================================= */
+
 header {
   all: unset;
   display: block;
@@ -71,8 +68,11 @@ header {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  overflow: hidden; /* evita saltos */
+  overflow: hidden;
   white-space: nowrap;
+  width: 240px;
+  min-width: 240px;
+  max-width: 240px;
 }
 
 .ms-logo {
@@ -123,6 +123,10 @@ header {
 .ms-header-right {
   display: flex;
   justify-content: flex-end;
+  width: 240px;
+  min-width: 240px;
+  max-width: 240px;
+  overflow: hidden;
 }
 
 .ms-login-btn {
@@ -399,7 +403,12 @@ input:focus, select:focus {
   }
 
   .ms-header-right {
-    justify-content: flex-start;
-    margin-top: 0.5rem;
+    display: flex;
+    justify-content: flex-end;
+
+    width: 240px;
+    min-width: 240px;
+    max-width: 240px;
+    overflow: hidden;
   }
 }

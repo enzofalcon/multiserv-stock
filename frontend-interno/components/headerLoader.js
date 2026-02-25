@@ -22,6 +22,50 @@ function cargarHeader(pageName, breadcrumbList = []) {
 
             document.getElementById("header-container").innerHTML = html;
 
+
+
+            // 🔐 Cargar información de sesión y botón logout
+fetch("http://localhost/multiserv-stock/api-stock/public/session.php")
+  .then(res => res.json())
+  .then(data => {
+
+    const contenedor = document.getElementById("usuario-info");
+    if (!contenedor) return;
+
+    if (data.logueado) {
+
+      contenedor.innerHTML = `
+        👤 ${data.usuario.nombre}
+        <button id="btnLogout" class="btn btn-secondary">
+          Cerrar sesión
+        </button>
+      `;
+
+      document.getElementById("btnLogout")
+        .addEventListener("click", () => {
+
+          fetch("http://localhost/multiserv-stock/api-stock/public/logout.php")
+            .then(() => {
+
+              // Redirige correctamente según carpeta
+              const enPages = window.location.pathname.includes("/pages/");
+              window.location.href = enPages ? "../login.html" : "login.html";
+
+            });
+
+        });
+
+    } else {
+
+      const enPages = window.location.pathname.includes("/pages/");
+      contenedor.innerHTML = `
+        <a href="${enPages ? '../login.html' : 'login.html'}">
+          Iniciar sesión
+        </a>
+      `;
+    }
+
+  });   
             /* ---------- 1. Título AUTOMÁTICO ---------- */
             const title = document.getElementById("ms-page-title");
 

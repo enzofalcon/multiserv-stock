@@ -1,4 +1,6 @@
 <?php
+require_once "../middleware/auth.php";
+require_once "../src/database.php";
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);

@@ -8,6 +8,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 // Conexión a BD
 // ================================
 require_once __DIR__ . '/../src/Database.php';
+require_once "../middleware/auth.php";
 require_once __DIR__ . '/../src/DireccionSucursalRepository.php';
 
 $db = new Database();

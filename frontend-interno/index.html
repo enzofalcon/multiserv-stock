@@ -28,7 +28,6 @@
 
     <p>Este es el panel principal. Seleccione una sección desde el menú superior.</p>
 
-    <!-- Tabla de productos como vista rápida -->
     <div class="actions-bar">
       <input
         type="text"
@@ -66,19 +65,51 @@
 
   </main>
 
-  <!-- Header dinámico JS -->
+  <!-- Header loader -->
   <script src="components/headerLoader.js"></script>
-  <script>
-    cargarHeader("inicio");
-  </script>
 
-  <!-- Script actual de productos -->
+  <!-- Lógica principal -->
   <script>
+  document.addEventListener("DOMContentLoaded", () => {
+
+    fetch("http://localhost/multiserv-stock/api-stock/public/session.php")
+      .then(res => res.json())
+      .then(data => {
+
+        if (!data.logueado) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        // Solo si está logueado
+        cargarHeader("inicio");
+        cargarProductos();
+
+      })
+      .catch(() => {
+        window.location.href = "login.html";
+      });
+
+  });
+
+
+  function cargarProductos() {
+
     const tabla = document.getElementById("tabla-productos");
 
     fetch("http://localhost/multiserv-stock/api-stock/public/productos.php")
-      .then(response => response.json())
+      .then(response => {
+
+        if (response.status === 401) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        return response.json();
+      })
       .then(productos => {
+
+        if (!productos) return;
 
         tabla.innerHTML = "";
 
@@ -92,6 +123,7 @@
             : "Normal";
 
           const fila = document.createElement("tr");
+
           fila.innerHTML = `
             <td>${p.codigo}</td>
             <td>${p.descripcion}</td>
@@ -113,6 +145,7 @@
       .catch(error => {
         console.error("Error al cargar productos:", error);
       });
+  }
   </script>
 
 </body>

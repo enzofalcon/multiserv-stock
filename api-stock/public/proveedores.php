@@ -1,6 +1,6 @@
 <?php
-
-require_once __DIR__ . '/../src/Database.php';
+require_once "../middleware/auth.php";
+require_once "../src/database.php";
 
 header('Content-Type: application/json');
 
