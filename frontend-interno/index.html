@@ -21,46 +21,46 @@
   <!-- Header dinámico -->
   <div id="header-container"></div>
 
-  <!-- Contenido principal -->
   <main class="main-container">
 
     <h2>Bienvenido al sistema</h2>
+    <p>Panel general de control del sistema.</p>
 
-    <p>Este es el panel principal. Seleccione una sección desde el menú superior.</p>
+    <!-- =========================
+         DASHBOARD CARDS
+    ========================== -->
+    <div class="dashboard-cards">
 
-    <div class="actions-bar">
-      <input
-        type="text"
-        class="search-input"
-        placeholder="Buscar producto…"
-        disabled
-      >
+      <div class="card">
+        <h3>Total de productos</h3>
+        <p id="total-productos">0</p>
+      </div>
 
-      <a href="pages/productos.html" class="btn btn-primary">
-        Agregar producto
-      </a>
+      <div class="card">
+        <h3>Productos con bajo stock</h3>
+        <p id="bajo-stock">0</p>
+      </div>
+
+      <div class="card">
+        <h3>Stock total general</h3>
+        <p id="stock-general">0</p>
+      </div>
+
+      <div class="card">
+        <h3>Total de proveedores</h3>
+        <p id="total-proveedores">0</p>
+      </div>
+
     </div>
 
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Descripción</th>
-            <th>Stock total</th>
-            <th>Sucursal 1</th>
-            <th>Sucursal 2</th>
-            <th>Sucursal 3</th>
-            <th>Stock mínimo</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-
-        <tbody id="tabla-productos">
-          <!-- Se carga por JS -->
-        </tbody>
-      </table>
+    <!-- =========================
+         LISTA DE ALERTAS
+    ========================== -->
+    <div class="dashboard-alertas">
+      <h3>Productos en alerta</h3>
+      <ul id="lista-alertas">
+        <!-- Se carga por JS -->
+      </ul>
     </div>
 
   </main>
@@ -68,11 +68,15 @@
   <!-- Header loader -->
   <script src="components/headerLoader.js"></script>
 
-  <!-- Lógica principal -->
+  <!-- =========================
+       SCRIPT PRINCIPAL
+  ========================== -->
   <script>
   document.addEventListener("DOMContentLoaded", () => {
 
-    fetch("http://localhost/multiserv-stock/api-stock/public/session.php")
+    fetch("../api-stock/public/session.php", {
+      credentials: "include"
+    })
       .then(res => res.json())
       .then(data => {
 
@@ -81,9 +85,8 @@
           return;
         }
 
-        // Solo si está logueado
         cargarHeader("inicio");
-        cargarProductos();
+        cargarDashboard();
 
       })
       .catch(() => {
@@ -93,11 +96,11 @@
   });
 
 
-  function cargarProductos() {
+  function cargarDashboard() {
 
-    const tabla = document.getElementById("tabla-productos");
-
-    fetch("http://localhost/multiserv-stock/api-stock/public/productos.php")
+    fetch("../api-stock/public/dashboard.php", {
+      credentials: "include"
+    })
       .then(response => {
 
         if (response.status === 401) {
@@ -107,43 +110,61 @@
 
         return response.json();
       })
-      .then(productos => {
+      .then(data => {
 
-        if (!productos) return;
+        if (!data) return;
 
-        tabla.innerHTML = "";
+        // =========================
+        // ACTUALIZAR TARJETAS
+        // =========================
 
-        productos.forEach(p => {
+        document.getElementById("total-productos").textContent = data.total_productos;
+        document.getElementById("bajo-stock").textContent = data.bajo_stock;
+        document.getElementById("stock-general").textContent = data.stock_general;
+        document.getElementById("total-proveedores").textContent = data.total_proveedores;
 
-          const stockTotal = p.stock_total ?? 0;
-          const stockMin = p.stock_minimo ?? 0;
+        // Cambiar color si hay bajo stock
+        const cardBajoStock = document.getElementById("bajo-stock").closest(".card");
 
-          const estado = (stockTotal <= stockMin)
-            ? "Bajo stock"
-            : "Normal";
+        if (data.bajo_stock > 0) {
+          cardBajoStock.classList.add("alert");
+        } else {
+          cardBajoStock.classList.remove("alert");
+        }
 
-          const fila = document.createElement("tr");
+        // =========================
+        // RENDER ALERTAS
+        // =========================
 
-          fila.innerHTML = `
-            <td>${p.codigo}</td>
-            <td>${p.descripcion}</td>
-            <td>${stockTotal}</td>
-            <td>${p.stock_s1 ?? 0}</td>
-            <td>${p.stock_s2 ?? 0}</td>
-            <td>${p.stock_s3 ?? 0}</td>
-            <td>${stockMin}</td>
-            <td>${estado}</td>
-            <td>
-              <button class="btn btn-secondary" disabled>Editar</button>
-            </td>
+        const lista = document.getElementById("lista-alertas");
+        lista.innerHTML = "";
+
+        if (!data.productos_alerta || data.productos_alerta.length === 0) {
+          lista.innerHTML = "<li>No hay productos en alerta.</li>";
+          return;
+        }
+
+        data.productos_alerta.forEach(p => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <span class="alert-nombre">${p.descripcion}</span>
+            <span class="alert-stock">
+              Stock: ${p.stock_actual} | Mínimo: ${p.stock_minimo}
+            </span>
           `;
-
-          tabla.appendChild(fila);
+          if (p.stock_actual === 0) {
+            li.classList.add("alert-critico");
+          } else if (p.stock_actual < p.stock_minimo) {
+            li.classList.add("alert-bajo");
+          } else {
+            li.classList.add("alert-minimo");
+          }
+          lista.appendChild(li);
         });
 
       })
       .catch(error => {
-        console.error("Error al cargar productos:", error);
+        console.error("Error al cargar dashboard:", error);
       });
   }
   </script>

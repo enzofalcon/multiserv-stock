@@ -97,7 +97,76 @@ try {
         ]);
         exit;
     }
+        // ============================
+    // PUT - Registrar salida de stock (-1)
+    // ============================
+    if ($method === 'PUT') {
 
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        $idProducto = $input['idProducto'] ?? null;
+        $idSucursal = $input['idSucursal'] ?? null;
+        $cantidad   = $input['cantidad'] ?? 1;
+
+        if (!$idProducto || !$idSucursal || $cantidad <= 0) {
+            http_response_code(400);
+            echo json_encode([
+                'error' => 'Datos inválidos'
+            ]);
+            exit;
+        }
+
+        // Obtener stock actual
+        $stmt = $conn->prepare("
+            SELECT cantidad
+            FROM disponibilidad
+            WHERE idProducto = :idProducto
+              AND idSucursal = :idSucursal
+        ");
+
+        $stmt->execute([
+            ':idProducto' => $idProducto,
+            ':idSucursal' => $idSucursal
+        ]);
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) {
+            echo json_encode([
+                'error' => 'No existe stock para esa sucursal'
+            ]);
+            exit;
+        }
+
+        $stockActual = (int)$row['cantidad'];
+
+        if ($stockActual < $cantidad) {
+            echo json_encode([
+                'error' => 'Stock insuficiente'
+            ]);
+            exit;
+        }
+
+        $nuevoStock = $stockActual - $cantidad;
+
+        $stmt = $conn->prepare("
+            UPDATE disponibilidad
+            SET cantidad = :cantidad
+            WHERE idProducto = :idProducto
+              AND idSucursal = :idSucursal
+        ");
+
+        $stmt->execute([
+            ':cantidad'   => $nuevoStock,
+            ':idProducto' => $idProducto,
+            ':idSucursal' => $idSucursal
+        ]);
+
+        echo json_encode([
+            'success' => true
+        ]);
+        exit;
+    }
     // ============================
     // Método no permitido
     // ============================

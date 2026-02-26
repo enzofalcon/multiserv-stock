@@ -62,7 +62,14 @@ try {
             exit;
         }
 
-        $id = $productRepo->create($input['descripcion']);
+        $stockMinimo = isset($input['stock_minimo'])
+            ? (int)$input['stock_minimo']
+            : 0;
+
+        $id = $productRepo->create(
+            $input['descripcion'],
+            $stockMinimo
+        );
 
         echo json_encode([
             'success' => true,

@@ -18,13 +18,21 @@
     <h2>Gestión de Sucursales</h2>
 
     <div class="actions-bar">
-      <button id="btnNuevaSucursal" class="btn btn-primary">
-        Nueva sucursal
-      </button>
+
+      <div class="left-actions">
+        <!-- opcional buscador futuro -->
+      </div>
+
+      <div class="right-actions">
+        <button id="btnNuevaSucursal" class="btn btn-primary">
+          Nueva sucursal
+        </button>
+      </div>
+
     </div>
 
     <!-- Panel de acciones de sucursal seleccionada -->
-    <div id="accionesSucursal" class="actions-bar hidden">
+    <div id="accionesSucursal" class="table-actions hidden">
       <span id="sucursalSeleccionada" class="selected-info"></span>
 
       <button id="btnEditarSucursal" class="btn btn-primary">Editar</button>

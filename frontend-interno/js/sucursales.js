@@ -76,7 +76,9 @@ function renderSucursales(lista) {
       <td>${s.numSucursal}</td>
       <td>${s.correo}</td>
       <td>${s.telefono}</td>
-      <td>${s.estado}</td>
+      <td class="${s.estado === 'activa' ? 'estado-activo' : 'estado-inactivo'}">
+        ${s.estado}
+      </td>
     `;
 
     const chk = tr.querySelector(".chkSucursal");

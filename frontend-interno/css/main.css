@@ -188,6 +188,43 @@ header {
 }
 
 /* =========================================================
+   PATRÓN CRUD ESTÁNDAR
+   ========================================================= */
+
+.actions-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.left-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.right-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.selected-info {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+/* =========================================================
    BUSCADOR
    ========================================================= */
 
@@ -411,4 +448,194 @@ input:focus, select:focus {
     max-width: 240px;
     overflow: hidden;
   }
+}
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-secondary)
+  );
+}
+
+.login-card {
+  background-color: var(--color-surface);
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 380px;
+}
+
+.login-title {
+  text-align: center;
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--color-primary);
+}
+
+.login-subtitle {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.login-btn-full {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
+
+.card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--color-primary);
+  transition: 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.card p {
+  margin: 0.5rem 0 0 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+/* Variante visual para bajo stock */
+.card.alert {
+  border-left-color: var(--color-error);
+}
+
+.card.alert p {
+  color: var(--color-error);
+}
+
+/* ALERTAS */
+
+.dashboard-alertas {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.dashboard-alertas h3 {
+  margin-top: 0;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+}
+
+#lista-alertas {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0 0;
+}
+
+#lista-alertas li:last-child {
+  border-bottom: none;
+}
+
+.dashboard-alertas ul {
+  list-style: none;
+  padding: 0;
+}
+
+.dashboard-alertas li {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-alertas li:last-child {
+  border-bottom: none;
+}
+
+.alert-critico {
+  border-left: 4px solid #dc2626;
+}
+
+.alert-bajo {
+  border-left: 4px solid #f97316;
+}
+
+.alert-minimo {
+  border-left: 4px solid #eab308;
+}
+
+.btn-danger {
+  background-color: var(--color-error);
+  color: white;
+}
+
+table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.btn {
+  transition: 0.15s ease;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+
+.tooltip {
+  position: relative;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111;
+  color: #fff;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.tooltip:hover::after {
+  opacity: 1;
 }

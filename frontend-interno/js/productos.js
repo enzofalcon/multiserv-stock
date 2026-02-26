@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 300); // debounce 300ms
 
     });
+
   }
 
   // ==============================
@@ -61,6 +62,12 @@ document.addEventListener('DOMContentLoaded', () => {
   document
     .getElementById('btnGuardarStock')
     ?.addEventListener('click', guardarStockInicial);
+
+  const btnSalida = document.getElementById('btnSalidaStock');
+
+  if (btnSalida) {
+    btnSalida.addEventListener('click', registrarSalidaStock);
+  }
 
   // ==============================
   // MODAL COSTO
@@ -124,10 +131,11 @@ function renderTablaProductos(productos) {
       <td>${p.descripcion}</td>
       <td class="${estadoStock}">${p.stock_total}</td>
       <td>
-        <button class="btn btn-secondary"
-          onclick="verDisponibilidad(${p.id}, '${escapeHtml(p.descripcion)}')">
-          Ver
-        </button>
+      <button class="btn btn-secondary tooltip"
+        data-tooltip="Ver disponibilidad por sucursal"
+        onclick="verDisponibilidad(${p.id}, '${escapeHtml(p.descripcion)}')">
+        Stock
+      </button>
 
         <button class="btn btn-primary"
           onclick="abrirModalCosto(${p.id}, '${escapeHtml(p.descripcion)}')">
@@ -154,15 +162,18 @@ function cerrarModalProducto() {
 
 function guardarProducto() {
   const input = document.getElementById('descripcionProducto');
+  const inputStock = document.getElementById('stockMinimoProducto');
   const boton = document.getElementById('btnGuardarProducto');
   const mensaje = document.getElementById('mensajeProducto');
 
   const descripcion = input.value.trim();
+  const stockMinimo = inputStock.value;
 
   // Reset mensaje
   mensaje.className = 'message hidden';
   mensaje.innerText = '';
 
+  // Validación descripción
   if (descripcion === '') {
     mensaje.innerText = 'La descripción es obligatoria';
     mensaje.classList.remove('hidden');
@@ -171,14 +182,26 @@ function guardarProducto() {
     return;
   }
 
+  // Validación stock mínimo
+  if (stockMinimo === '' || stockMinimo < 0) {
+    mensaje.innerText = 'El stock mínimo debe ser 0 o mayor';
+    mensaje.classList.remove('hidden');
+    mensaje.classList.add('message-error');
+    inputStock.focus();
+    return;
+  }
+
   // UI: deshabilitar botón
   boton.disabled = true;
   boton.innerText = 'Guardando...';
 
-    fetch(API_BASE + 'productos.php', {
+  fetch(API_BASE + 'productos.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ descripcion })
+    body: JSON.stringify({
+      descripcion: descripcion,
+      stock_minimo: Number(stockMinimo)
+    })
   })
     .then(res => res.json())
     .then(resp => {
@@ -194,10 +217,8 @@ function guardarProducto() {
       mensaje.classList.remove('hidden');
       mensaje.classList.add('message-success');
 
-      // Refrescar listado
       cargarProductos();
 
-      // Cerrar modal luego de un momento
       setTimeout(() => {
         cerrarModalProducto();
       }, 900);
@@ -212,7 +233,6 @@ function guardarProducto() {
       boton.innerText = 'Guardar';
     });
 }
-
 
 // ==================================================
 // MODAL DISPONIBILIDAD
@@ -281,9 +301,7 @@ function cerrarModalDisponibilidad() {
   document.getElementById('modalDisponibilidad').classList.add('hidden');
 }
 
-// ==================================================
-// UTIL
-// ==================================================
+
 function escapeHtml(text) {
   return text
     .replace(/&/g, "&amp;")
@@ -473,4 +491,52 @@ function guardarCosto() {
       mensaje.classList.remove('hidden');
       mensaje.classList.add('message-error');
     });
+}
+
+function registrarSalidaStock() {
+
+  const idSucursal = document.getElementById('idSucursal').value;
+  const mensaje = document.getElementById('mensajeStock');
+
+  mensaje.className = 'message hidden';
+  mensaje.innerText = '';
+
+  if (!productoActivoId || !idSucursal) {
+    mensaje.innerText = 'Seleccione una sucursal.';
+    mensaje.classList.remove('hidden');
+    mensaje.classList.add('message-error');
+    return;
+  }
+
+  fetch(API_BASE + 'disponibilidad.php', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      idProducto: productoActivoId,
+      idSucursal: Number(idSucursal),
+      cantidad: 1
+    })
+  })
+  .then(res => res.json())
+  .then(resp => {
+
+    if (resp.error) {
+      mensaje.innerText = resp.error;
+      mensaje.classList.remove('hidden');
+      mensaje.classList.add('message-error');
+      return;
+    }
+
+    mensaje.innerText = 'Salida registrada correctamente.';
+    mensaje.classList.remove('hidden');
+    mensaje.classList.add('message-success');
+
+    cargarProductos();
+    recargarDisponibilidad();
+  })
+  .catch(() => {
+    mensaje.innerText = 'Error al registrar salida.';
+    mensaje.classList.remove('hidden');
+    mensaje.classList.add('message-error');
+  });
 }
