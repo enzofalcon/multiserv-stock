@@ -1,31 +1,69 @@
 let mostrarInactivos = false;
 document.addEventListener('DOMContentLoaded', () => {
+
+  // ==============================
+  // CARGA INICIAL
+  // ==============================
   cargarProveedores();
 
+  // ==============================
+  // BUSCADOR PROVEEDORES
+  // ==============================
+  const searchInput = document.getElementById('searchProveedor');
+  let timeoutBusqueda = null;
+
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+
+      clearTimeout(timeoutBusqueda);
+
+      timeoutBusqueda = setTimeout(() => {
+        const texto = searchInput.value.trim();
+        cargarProveedores(texto);
+      }, 300);
+
+    });
+  }
+
+  // ==============================
+  // MODAL NUEVO / EDITAR PROVEEDOR
+  // ==============================
   const btnNuevo = document.getElementById('btnNuevoProveedor');
   const btnCerrar = document.getElementById('cerrarModalProveedor');
   const btnCancelar = document.getElementById('btnCancelarProveedor');
   const overlay = document.querySelector('#modalProveedor .modal-overlay');
   const btnGuardar = document.getElementById('btnGuardarProveedor');
-  const btnEditar = document.getElementById('btnEditarProveedor'); 
+  const btnEditar = document.getElementById('btnEditarProveedor');
 
   if (btnNuevo) btnNuevo.addEventListener('click', abrirModalProveedor);
   if (btnCerrar) btnCerrar.addEventListener('click', cerrarModalProveedor);
   if (btnCancelar) btnCancelar.addEventListener('click', cerrarModalProveedor);
   if (overlay) overlay.addEventListener('click', cerrarModalProveedor);
   if (btnGuardar) btnGuardar.addEventListener('click', guardarProveedor);
+  if (btnEditar) btnEditar.addEventListener('click', editarProveedor);
 
-  if (btnEditar) btnEditar.addEventListener('click', editarProveedor); 
+  // ==============================
+  // ELIMINAR / DESACTIVAR
+  // ==============================
   const btnEliminar = document.getElementById('btnEliminarProveedor');
   if (btnEliminar) btnEliminar.addEventListener('click', eliminarProveedor);
+
+  // ==============================
+  // TOGGLE INACTIVOS
+  // ==============================
   const btnToggle = document.getElementById("btnToggleInactivos");
+
   if (btnToggle) {
     btnToggle.addEventListener("click", () => {
       mostrarInactivos = !mostrarInactivos;
+
       btnToggle.innerText = mostrarInactivos
         ? "Ocultar inactivos"
         : "Mostrar inactivos";
-      cargarProveedores();
+
+      // mantener texto de búsqueda actual si existe
+      const textoActual = searchInput ? searchInput.value.trim() : '';
+      cargarProveedores(textoActual);
     });
   }
 
@@ -35,18 +73,22 @@ document.addEventListener('DOMContentLoaded', () => {
 // ======================================================
 // Cargar tabla
 // ======================================================
-function cargarProveedores() {
+function cargarProveedores(search = '') {
 
-  fetch(API_BASE + 'proveedores.php')
+  let url = API_BASE + 'proveedores.php';
+
+  if (search !== '') {
+    url += '?search=' + encodeURIComponent(search);
+  }
+
+  fetch(url)
     .then(res => {
 
-      // 🔐 No autorizado → redirigir
       if (res.status === 401) {
         window.location.href = "../login.html";
         return null;
       }
 
-      // ❌ Otros errores HTTP reales
       if (!res.ok) {
         throw new Error("Error HTTP " + res.status);
       }
@@ -55,14 +97,12 @@ function cargarProveedores() {
     })
     .then(data => {
 
-      if (!data) return; // ya redirigido
+      if (!data) return;
 
       renderTablaProveedores(data);
     })
     .catch(error => {
-
       console.error("Error real:", error);
-
       alert("Error cargando proveedores");
     });
 }

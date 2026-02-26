@@ -11,11 +11,31 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
 
-    $stmt = $conn->query("
-        SELECT idProveedor, nombre, correo, rut, estado
-        FROM proveedor
-        ORDER BY nombre
-    ");
+    $search = $_GET['search'] ?? null;
+
+    if ($search !== null && $search !== '') {
+
+        $stmt = $conn->prepare("
+            SELECT idProveedor, nombre, correo, rut, estado
+            FROM proveedor
+            WHERE LOWER(nombre) LIKE LOWER(:search)
+               OR LOWER(rut) LIKE LOWER(:search)
+               OR LOWER(correo) LIKE LOWER(:search)
+            ORDER BY nombre
+        ");
+
+        $stmt->execute([
+            ':search' => '%' . $search . '%'
+        ]);
+
+    } else {
+
+        $stmt = $conn->query("
+            SELECT idProveedor, nombre, correo, rut, estado
+            FROM proveedor
+            ORDER BY nombre
+        ");
+    }
 
     echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
     exit;
