@@ -36,10 +36,35 @@ document.addEventListener('DOMContentLoaded', () => {
 // Cargar tabla
 // ======================================================
 function cargarProveedores() {
+
   fetch(API_BASE + 'proveedores.php')
-    .then(res => res.json())
-    .then(data => renderTablaProveedores(data))
-    .catch(() => alert('Error cargando proveedores'));
+    .then(res => {
+
+      // 🔐 No autorizado → redirigir
+      if (res.status === 401) {
+        window.location.href = "../login.html";
+        return null;
+      }
+
+      // ❌ Otros errores HTTP reales
+      if (!res.ok) {
+        throw new Error("Error HTTP " + res.status);
+      }
+
+      return res.json();
+    })
+    .then(data => {
+
+      if (!data) return; // ya redirigido
+
+      renderTablaProveedores(data);
+    })
+    .catch(error => {
+
+      console.error("Error real:", error);
+
+      alert("Error cargando proveedores");
+    });
 }
 
 

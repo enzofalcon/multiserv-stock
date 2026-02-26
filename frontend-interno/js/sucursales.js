@@ -19,14 +19,51 @@ document.addEventListener('DOMContentLoaded', () => {
 // Cargar sucursales
 // ===============================
 function cargarSucursales() {
+
   fetch(API_BASE + 'sucursales.php')
-    .then(res => res.json())
-    .then(data => renderSucursales(data))
-    .catch(() => alert("Error cargando sucursales"));
+    .then(res => {
+
+      if (res.status === 401) {
+        window.location.href = "../login.html";
+        return null;
+      }
+
+      if (!res.ok) {
+        throw new Error("Error HTTP " + res.status);
+      }
+
+      return res.json();
+    })
+    .then(data => {
+
+      if (!data) return;
+
+      renderSucursales(data); // ✅ nombre correcto
+    })
+    .catch(error => {
+      console.error("Error real:", error);
+      alert("Error cargando sucursales");
+    });
 }
 
+
+// ===============================
+// Render
+// ===============================
 function renderSucursales(lista) {
-  const tbody = document.querySelector('#tablaSucursales tbody');
+
+  const tabla = document.getElementById("tablaSucursales");
+  if (!tabla) {
+    console.error("No existe tablaSucursales");
+    return;
+  }
+
+  const tbody = tabla.querySelector("tbody");
+  if (!tbody) {
+    console.error("No existe tbody en tablaSucursales");
+    return;
+  }
+
   tbody.innerHTML = '';
 
   lista.forEach(s => {
@@ -44,116 +81,31 @@ function renderSucursales(lista) {
 
     const chk = tr.querySelector(".chkSucursal");
 
-    // =============================
-    // EVENTO DEL CHECKBOX
-    // =============================
-chk.addEventListener("change", () => {
-  if (chk.checked) {
+    chk.addEventListener("change", () => {
+      if (chk.checked) {
 
-    document.getElementById("idSucursalActual").value = s.idSucursal;
+        document.getElementById("idSucursalActual").value = s.idSucursal;
+        document.getElementById("accionesSucursal").classList.remove("hidden");
+        document.getElementById("sucursalSeleccionada").innerText =
+          `Sucursal seleccionada: ${s.numSucursal}`;
 
-    document.getElementById("accionesSucursal").classList.remove("hidden");
+        marcarFilaSucursal(tr);
 
-    document.getElementById("sucursalSeleccionada").innerText =
-      `Sucursal seleccionada: ${s.numSucursal}`;
+      } else {
 
-    marcarFilaSucursal(tr);
+        document.getElementById("accionesSucursal").classList.add("hidden");
+        document.getElementById("idSucursalActual").value = "";
+        document.getElementById("sucursalSeleccionada").innerText = "";
+        limpiarSeleccionSucursales();
+      }
+    });
 
-  } else {
-
-    document.getElementById("accionesSucursal").classList.add("hidden");
-    document.getElementById("idSucursalActual").value = "";
-    document.getElementById("sucursalSeleccionada").innerText = "";
-    limpiarSeleccionSucursales();
-  }
-});
-
-
-    // =============================
-    // CLIC EN LA FILA → seleccionar checkbox
-    // =============================
     tr.addEventListener("click", (e) => {
-
       if (e.target.classList.contains("chkSucursal")) return;
-
       chk.checked = true;
       chk.dispatchEvent(new Event("change"));
     });
 
     tbody.appendChild(tr);
   });
-}
-
-
-// ===============================
-// Modal
-// ===============================
-function abrirModalSucursal() {
-  document.getElementById('mensajeSucursal').className = 'message hidden';
-  document.getElementById('numeroSucursal').value = '';
-  document.getElementById('correoSucursal').value = '';
-  document.getElementById('telefonoSucursal').value = '';
-
-  document.getElementById('modalSucursal').classList.remove('hidden');
-}
-
-function cerrarModalSucursal() {
-  document.getElementById('modalSucursal').classList.add('hidden');
-}
-
-
-// ===============================
-// Guardar sucursal
-// ===============================
-function guardarSucursal() {
-  const numero = document.getElementById('numeroSucursal').value.trim();
-  const correo = document.getElementById('correoSucursal').value.trim();
-  const telefono = document.getElementById('telefonoSucursal').value.trim();
-
-  const msg = document.getElementById('mensajeSucursal');
-  msg.className = 'message hidden';
-  msg.innerText = '';
-
-  if (!numero || !correo || !telefono) {
-    msg.innerText = "Todos los campos son obligatorios.";
-    msg.classList.remove('hidden');
-    msg.classList.add('message-error');
-    return;
-  }
-
-  fetch(API_BASE + 'sucursales.php', {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ numSucursal: numero, correo, telefono })
-  })
-    .then(res => res.json())
-    .then(resp => {
-      if (resp.error) {
-        msg.innerText = resp.error;
-        msg.classList.remove('hidden');
-        msg.classList.add('message-error');
-        return;
-      }
-
-      msg.innerText = "Sucursal creada correctamente.";
-      msg.classList.remove('hidden');
-      msg.classList.add('message-success');
-
-      setTimeout(() => {
-        cerrarModalSucursal();
-        cargarSucursales();
-      }, 800);
-    });
-}
-
-
-function limpiarSeleccionSucursales() {
-  document.querySelectorAll("#tablaSucursales tr").forEach(f => {
-    f.classList.remove("fila-activa");
-  });
-}
-
-function marcarFilaSucursal(fila) {
-  limpiarSeleccionSucursales();
-  fila.classList.add("fila-activa");
 }
