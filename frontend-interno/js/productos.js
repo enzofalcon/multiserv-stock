@@ -3,13 +3,34 @@ let productoActivoId = null;
 // INIT
 // ==================================================
 document.addEventListener('DOMContentLoaded', () => {
+
+  // ==============================
+  // CARGA INICIAL
+  // ==============================
   cargarProductos();
-document
-  .getElementById('btnGuardarStock')
-  .addEventListener('click', guardarStockInicial);
 
+  // ==============================
+  // BUSCADOR
+  // ==============================
+  const searchInput = document.getElementById('searchProducto');
+  let timeoutBusqueda = null;
 
-  // ---------- Modal Nuevo Producto ----------
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+
+      clearTimeout(timeoutBusqueda);
+
+      timeoutBusqueda = setTimeout(() => {
+        const texto = searchInput.value.trim();
+        cargarProductos(texto);
+      }, 300); // debounce 300ms
+
+    });
+  }
+
+  // ==============================
+  // BOTONES MODAL NUEVO PRODUCTO
+  // ==============================
   const btnNuevo = document.getElementById('btnNuevoProducto');
   const btnCerrar = document.getElementById('cerrarModalProducto');
   const btnCancelar = document.getElementById('btnCancelarProducto');
@@ -17,14 +38,16 @@ document
     document.querySelector('#modalNuevoProducto .modal-overlay');
   const btnGuardar = document.getElementById('btnGuardarProducto');
 
-  if (btnNuevo) btnNuevo.addEventListener('click', abrirModalProducto); 
+  if (btnNuevo) btnNuevo.addEventListener('click', abrirModalProducto);
   if (btnCerrar) btnCerrar.addEventListener('click', cerrarModalProducto);
   if (btnCancelar) btnCancelar.addEventListener('click', cerrarModalProducto);
   if (overlayProducto)
     overlayProducto.addEventListener('click', cerrarModalProducto);
   if (btnGuardar) btnGuardar.addEventListener('click', guardarProducto);
 
-  // ---------- Modal Disponibilidad ----------
+  // ==============================
+  // MODAL DISPONIBILIDAD
+  // ==============================
   const btnCerrarDisp =
     document.getElementById('cerrarModalDisponibilidad');
   const overlayDisp =
@@ -35,44 +58,57 @@ document
   if (overlayDisp)
     overlayDisp.addEventListener('click', cerrarModalDisponibilidad);
 
+  document
+    .getElementById('btnGuardarStock')
+    ?.addEventListener('click', guardarStockInicial);
 
-  // Modal Costo
+  // ==============================
+  // MODAL COSTO
+  // ==============================
   const btnCerrarCosto = document.getElementById('cerrarModalCosto');
   const btnCancelarCosto = document.getElementById('btnCancelarCosto');
   const overlayCosto = document.querySelector('#modalCosto .modal-overlay');
   const btnGuardarCosto = document.getElementById('btnGuardarCosto');
 
-  if (btnCerrarCosto) btnCerrarCosto.addEventListener('click', cerrarModalCosto);
-  if (btnCancelarCosto) btnCancelarCosto.addEventListener('click', cerrarModalCosto);
-  if (overlayCosto) overlayCosto.addEventListener('click', cerrarModalCosto);
-
-  if (btnGuardarCosto) btnGuardarCosto.addEventListener('click', guardarCosto);
-
+  if (btnCerrarCosto)
+    btnCerrarCosto.addEventListener('click', cerrarModalCosto);
+  if (btnCancelarCosto)
+    btnCancelarCosto.addEventListener('click', cerrarModalCosto);
+  if (overlayCosto)
+    overlayCosto.addEventListener('click', cerrarModalCosto);
+  if (btnGuardarCosto)
+    btnGuardarCosto.addEventListener('click', guardarCosto);
 
 });
 
 // ==================================================
 // LISTADO DE PRODUCTOS
 // ==================================================
-function cargarProductos() {
+function cargarProductos(search = '') {
 
-    fetch(API_BASE + 'productos.php')
-    .then(res => {
+    let url = API_BASE + 'productos.php';
 
-        if (res.status === 401) {
-            window.location.href = '../login.html';
-            return;
-        }
+    if (search !== '') {
+        url += '?search=' + encodeURIComponent(search);
+    }
 
-        return res.json();
-    })
-    .then(data => {
+    fetch(url)
+        .then(res => {
 
-        if (!data) return;
+            if (res.status === 401) {
+                window.location.href = '../login.html';
+                return;
+            }
 
-        renderTablaProductos(data);
-    })
-    .catch(() => alert('Error al cargar productos'));
+            return res.json();
+        })
+        .then(data => {
+
+            if (!data) return;
+
+            renderTablaProductos(data);
+        })
+        .catch(() => alert('Error al cargar productos'));
 }
 
 function renderTablaProductos(productos) {

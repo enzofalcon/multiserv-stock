@@ -8,19 +8,25 @@ class ProductRepository {
         $this->conn = $conn;
     }
 
-    public function findAll(): array {
+    public function findAll($search = null)
+    {
+        if ($search) {
+            $sql = "SELECT idProducto, descripcion 
+                    FROM producto
+                    WHERE descripcion LIKE :search
+                    ORDER BY descripcion ASC";
 
-        $sql = "
-            SELECT 
-                p.idProducto AS id,
-                p.descripcion
-            FROM producto p
-            ORDER BY p.descripcion
-        ";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':search', '%' . $search . '%');
+        } else {
+            $sql = "SELECT idProducto, descripcion 
+                    FROM producto
+                    ORDER BY descripcion ASC";
 
-        $stmt = $this->conn->prepare($sql);
+            $stmt = $this->conn->prepare($sql);
+        }
+
         $stmt->execute();
-
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

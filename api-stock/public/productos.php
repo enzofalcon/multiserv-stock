@@ -25,17 +25,19 @@ try {
     // =========================
     if ($method === 'GET') {
 
-        $productos = $productRepo->findAll();
+        $search = $_GET['search'] ?? null;
+
+        $productos = $productRepo->findAll($search);
         $resultado = [];
 
         foreach ($productos as $producto) {
-            $stockTotal = $stockRepo->getStockTotalByProducto($producto['id']);
+        $stockTotal = $stockRepo->getStockTotalByProducto($producto['idProducto']);
 
-            $resultado[] = [
-                'id'          => $producto['id'],
-                'descripcion' => $producto['descripcion'],
-                'stock_total' => $stockTotal
-            ];
+        $resultado[] = [
+            'id'          => $producto['idProducto'],
+            'descripcion' => $producto['descripcion'],
+            'stock_total' => $stockTotal
+        ];
         }
 
         echo json_encode($resultado);
