@@ -1,10 +1,14 @@
 <?php
+require_once __DIR__ . "/../src/Database.php";
 require_once __DIR__ . "/../src/StockRepository.php";
 
 header("Content-Type: application/json; charset=utf-8");
 
 try {
-    $repo = new StockRepository();
+
+    $conn = Database::getConnection();
+    $repo = new StockRepository($conn);
+
     $method = $_SERVER["REQUEST_METHOD"];
 
     if ($method === "GET") {
