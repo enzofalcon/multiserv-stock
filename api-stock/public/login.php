@@ -8,7 +8,8 @@ $raw = file_get_contents("php://input");
 
 echo json_encode([
     "raw_input" => $raw,
-    "json_decode" => json_decode($raw, true)
+    "_POST" => $_POST,
+    "_REQUEST" => $_REQUEST
 ]);
 exit;
 
