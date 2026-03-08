@@ -4,6 +4,14 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . "/../src/Database.php";
 
+$raw = file_get_contents("php://input");
+
+echo json_encode([
+    "raw_input" => $raw,
+    "json_decode" => json_decode($raw, true)
+]);
+exit;
+
 $data = json_decode(file_get_contents("php://input"), true);
 
 $email = trim($data["email"] ?? "");
