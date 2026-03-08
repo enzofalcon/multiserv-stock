@@ -6,8 +6,8 @@ require_once __DIR__ . "/../src/Database.php";
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-$email = $data["email"] ?? "";
-$password = $data["password"] ?? "";
+$email = trim($data["email"] ?? "");
+$password = trim($data["password"] ?? "");
 
 if (!$email || !$password) {
     echo json_encode(["error" => "Datos incompletos"]);
