@@ -1,7 +1,6 @@
 <?php
 require_once "../middleware/auth.php";
-require_once "../src/database.php";
-
+require_once __DIR__ . '/../src/Database.php';
 header('Content-Type: application/json');
 
 $db = new Database();

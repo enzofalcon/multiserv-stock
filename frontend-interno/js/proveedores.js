@@ -144,7 +144,12 @@ function renderTablaProveedores(lista) {
     // ============================
   chk.addEventListener("change", () => {
 
-  if (chk.checked) {
+    // 🔹 DESMARCAR LOS DEMÁS
+    document.querySelectorAll(".chkProveedor").forEach(c => {
+      if (c !== chk) c.checked = false;
+    });
+
+    if (chk.checked) {
 
     document.getElementById("idProveedorActual").value = p.idProveedor;
 
@@ -324,14 +329,6 @@ function guardarProveedor() {
     msg.classList.remove('hidden');
     msg.classList.add('message-error');
   });
-}
-
-
-function marcarFilaSeleccionada(fila) {
-  document.querySelectorAll("#tablaProveedores tbody tr")
-    .forEach(tr => tr.classList.remove("fila-seleccionada"));
-
-  fila.classList.add("fila-seleccionada");
 }
 
 function quitarResaltado() {

@@ -1,4 +1,9 @@
+
+// ===============================
+// Guardar sucursal
+// ===============================
 document.addEventListener('DOMContentLoaded', () => {
+
   cargarSucursales();
 
   const btnNuevo = document.getElementById('btnNuevaSucursal');
@@ -12,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnCancelar) btnCancelar.addEventListener('click', cerrarModalSucursal);
   if (overlay) overlay.addEventListener('click', cerrarModalSucursal);
   if (btnGuardar) btnGuardar.addEventListener('click', guardarSucursal);
+
 });
 
 
@@ -20,26 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // ===============================
 function cargarSucursales() {
 
-  fetch(API_BASE + 'sucursales.php')
-    .then(res => {
-
-      if (res.status === 401) {
-        window.location.href = "../login.html";
-        return null;
-      }
-
-      if (!res.ok) {
-        throw new Error("Error HTTP " + res.status);
-      }
-
-      return res.json();
-    })
-    .then(data => {
-
-      if (!data) return;
-
-      renderSucursales(data); // ✅ nombre correcto
-    })
+apiFetch("sucursales.php")
+  .then(data => {
+    if (!data) return;
+    renderSucursales(data);
+  })
     .catch(error => {
       console.error("Error real:", error);
       alert("Error cargando sucursales");
@@ -84,10 +75,19 @@ function renderSucursales(lista) {
     const chk = tr.querySelector(".chkSucursal");
 
     chk.addEventListener("change", () => {
+
+      // 🔹 DESMARCAR LOS DEMÁS
+      document.querySelectorAll(".chkSucursal").forEach(c => {
+        if (c !== chk) c.checked = false;
+      });
+
       if (chk.checked) {
 
         document.getElementById("idSucursalActual").value = s.idSucursal;
-        document.getElementById("accionesSucursal").classList.remove("hidden");
+
+        document.getElementById("accionesSucursal")
+          .classList.remove("hidden");
+
         document.getElementById("sucursalSeleccionada").innerText =
           `Sucursal seleccionada: ${s.numSucursal}`;
 
@@ -95,11 +95,16 @@ function renderSucursales(lista) {
 
       } else {
 
-        document.getElementById("accionesSucursal").classList.add("hidden");
+        document.getElementById("accionesSucursal")
+          .classList.add("hidden");
+
         document.getElementById("idSucursalActual").value = "";
+
         document.getElementById("sucursalSeleccionada").innerText = "";
+
         limpiarSeleccionSucursales();
       }
+
     });
 
     tr.addEventListener("click", (e) => {
@@ -110,4 +115,89 @@ function renderSucursales(lista) {
 
     tbody.appendChild(tr);
   });
+}
+
+// ===============================
+// Modal
+// ===============================
+
+function abrirModalSucursal() {
+  document.getElementById("modalSucursal").classList.remove("hidden");
+}
+
+function cerrarModalSucursal() {
+  document.getElementById("modalSucursal").classList.add("hidden");
+}
+
+// ===============================
+// Guardar sucursal
+// ===============================
+function guardarSucursal() {
+
+  const numInput = document.getElementById("numeroSucursal");
+  const correoInput = document.getElementById("correoSucursal");
+  const telInput = document.getElementById("telefonoSucursal");
+
+  if (!numInput || !correoInput || !telInput) {
+    console.error("Inputs del modal no encontrados");
+    return;
+  }
+
+  const numSucursal = numInput.value;
+  const correo = correoInput.value;
+  const telefono = telInput.value;
+
+  apiFetch("sucursales.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      numSucursal,
+      correo,
+      telefono
+    })
+  })
+  .then(data => {
+
+    if (data.success) {
+
+      cerrarModalSucursal();
+      cargarSucursales();
+
+      // limpiar formulario
+      numInput.value = "";
+      correoInput.value = "";
+      telInput.value = "";
+
+    } else {
+      alert(data.error || "Error guardando sucursal");
+    }
+
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Error de conexión");
+  });
+
+}
+
+function cerrarModalSucursal() {
+
+  document.getElementById("modalSucursal").classList.add("hidden");
+
+  document.getElementById("numeroSucursal").value = "";
+  document.getElementById("correoSucursal").value = "";
+  document.getElementById("telefonoSucursal").value = "";
+
+}
+
+function limpiarSeleccionSucursales() {
+  document.querySelectorAll("#tablaSucursales tbody tr")
+    .forEach(tr => tr.classList.remove("fila-seleccionada"));
+}
+
+function marcarFilaSucursal(fila) {
+  limpiarSeleccionSucursales();
+  fila.classList.add("fila-seleccionada");
 }

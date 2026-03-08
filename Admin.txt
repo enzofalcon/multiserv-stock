@@ -1,2 +1,5 @@
 admin@multiserv.local
 123456
+
+pass de la base de datos en docker:
+multiserv_pass

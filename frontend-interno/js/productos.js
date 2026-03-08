@@ -93,22 +93,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==================================================
 function cargarProductos(search = '') {
 
-    let url = API_BASE + 'productos.php';
+    let endpoint = 'productos.php';
 
     if (search !== '') {
-        url += '?search=' + encodeURIComponent(search);
+        endpoint += '?search=' + encodeURIComponent(search);
     }
 
-    fetch(url)
-        .then(res => {
-
-            if (res.status === 401) {
-                window.location.href = '../login.html';
-                return;
-            }
-
-            return res.json();
-        })
+    apiFetch(endpoint)
         .then(data => {
 
             if (!data) return;
@@ -195,7 +186,7 @@ function guardarProducto() {
   boton.disabled = true;
   boton.innerText = 'Guardando...';
 
-  fetch(API_BASE + 'productos.php', {
+  apiFetch('productos.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -203,8 +194,7 @@ function guardarProducto() {
       stock_minimo: Number(stockMinimo)
     })
   })
-    .then(res => res.json())
-    .then(resp => {
+      .then(resp => {
       if (resp.error) {
         mensaje.innerText = resp.error;
         mensaje.classList.remove('hidden');
@@ -212,16 +202,22 @@ function guardarProducto() {
         return;
       }
 
-      // Éxito
-      mensaje.innerText = 'Producto creado correctamente';
-      mensaje.classList.remove('hidden');
-      mensaje.classList.add('message-success');
+    // Éxito
+    mensaje.innerText = 'Producto creado correctamente';
+    mensaje.classList.remove('hidden');
+    mensaje.classList.add('message-success');
 
-      cargarProductos();
+    cargarProductos();
 
-      setTimeout(() => {
-        cerrarModalProducto();
-      }, 900);
+    setTimeout(() => {
+
+      input.value = '';
+      inputStock.value = '';
+
+      cerrarModalProducto();
+
+    }, 900);
+
     })
     .catch(() => {
       mensaje.innerText = 'Error al guardar el producto';
@@ -250,8 +246,7 @@ function verDisponibilidad(idProducto, descripcion) {
 
   cargarSucursales();
 
-    fetch(API_BASE + 'disponibilidad.php')
-    .then(res => res.json())
+    apiFetch('disponibilidad.php')
     .then(data => {
       const filtrados = data.filter(d => d.idProducto === idProducto);
       renderDisponibilidad(filtrados);
@@ -317,8 +312,7 @@ function cargarSucursales() {
   // Limpiar opciones anteriores
   select.innerHTML = '<option value="">Seleccionar sucursal</option>';
 
-  fetch(API_BASE + 'sucursales.php')
-    .then(res => res.json())
+  apiFetch('sucursales.php')
     .then(data => {
       data.forEach(s => {
         const option = document.createElement('option');
@@ -347,7 +341,7 @@ function guardarStockInicial() {
     return;
   }
 
-  fetch(API_BASE + 'disponibilidad.php', {
+  apiFetch('disponibilidad.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -356,7 +350,6 @@ function guardarStockInicial() {
       cantidad: Number(cantidad)
     })
   })
-    .then(res => res.json())
     .then(resp => {
       if (resp.error) {
         mensaje.innerText = resp.error;
@@ -384,8 +377,7 @@ function guardarStockInicial() {
 
 
 function recargarDisponibilidad() {
-  fetch(API_BASE + 'disponibilidad.php')
-    .then(res => res.json())
+  apiFetch('disponibilidad.php')
     .then(data => {
       const filtrados = data.filter(d => d.idProducto === productoActivoId);
       renderDisponibilidad(filtrados);
@@ -422,8 +414,7 @@ function abrirModalCosto(idProducto, descripcion) {
 
 
 function cargarProveedoresCosto() {
-  fetch(API_BASE + 'proveedores.php')
-    .then(res => res.json())
+  apiFetch('proveedores.php')
     .then(data => {
       const select = document.getElementById('proveedorCosto');
       select.innerHTML = '<option value="">Seleccione proveedor</option>';
@@ -459,7 +450,7 @@ function guardarCosto() {
     return;
   }
 
-  fetch(API_BASE + 'registro_costo.php', {
+  apiFetch('registro_costo.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -469,7 +460,6 @@ function guardarCosto() {
       porcentajeIVA: Number(iva)
     })
   })
-    .then(res => res.json())
     .then(resp => {
       if (resp.error) {
         mensaje.innerText = resp.error;
@@ -508,7 +498,7 @@ function registrarSalidaStock() {
     return;
   }
 
-  fetch(API_BASE + 'disponibilidad.php', {
+  apiFetch('disponibilidad.php', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -517,7 +507,6 @@ function registrarSalidaStock() {
       cantidad: 1
     })
   })
-  .then(res => res.json())
   .then(resp => {
 
     if (resp.error) {

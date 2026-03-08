@@ -65,8 +65,14 @@
 
   </main>
 
-  <!-- Header loader -->
-  <script src="components/headerLoader.js"></script>
+  <!-- Configuración API -->
+<script src="js/config.js"></script>
+
+<!-- Cliente API -->
+<script src="js/api.js"></script>
+
+<!-- Header dinámico -->
+<script src="components/headerLoader.js"></script>
 
   <!-- =========================
        SCRIPT PRINCIPAL
@@ -74,11 +80,8 @@
   <script>
   document.addEventListener("DOMContentLoaded", () => {
 
-    fetch("../api-stock/public/session.php", {
-      credentials: "include"
-    })
-      .then(res => res.json())
-      .then(data => {
+ apiFetch("session.php")
+       .then(data => {
 
         if (!data.logueado) {
           window.location.href = "login.html";
@@ -98,31 +101,15 @@
 
   function cargarDashboard() {
 
-    fetch("../api-stock/public/dashboard.php", {
-      credentials: "include"
-    })
-      .then(response => {
+  apiFetch("dashboard.php")
+    .then(data => {
 
-        if (response.status === 401) {
-          window.location.href = "login.html";
-          return;
-        }
+      if (!data) return;
 
-        return response.json();
-      })
-      .then(data => {
-
-        if (!data) return;
-
-        // =========================
-        // ACTUALIZAR TARJETAS
-        // =========================
-
-        document.getElementById("total-productos").textContent = data.total_productos;
-        document.getElementById("bajo-stock").textContent = data.bajo_stock;
-        document.getElementById("stock-general").textContent = data.stock_general;
-        document.getElementById("total-proveedores").textContent = data.total_proveedores;
-
+      document.getElementById("total-productos").textContent = data.total_productos;
+      document.getElementById("bajo-stock").textContent = data.bajo_stock;
+      document.getElementById("stock-general").textContent = data.stock_general;
+      document.getElementById("total-proveedores").textContent = data.total_proveedores;
         // Cambiar color si hay bajo stock
         const cardBajoStock = document.getElementById("bajo-stock").closest(".card");
 

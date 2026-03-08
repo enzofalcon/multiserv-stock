@@ -1,5 +1,5 @@
 /* Base del proyecto */
-const basePath = "/multiserv-stock/frontend-interno";
+const basePath = "";
 
 /* Diccionario de nombres automáticos */
 const pageTitles = {
@@ -24,9 +24,8 @@ function cargarHeader(pageName, breadcrumbList = []) {
 
 
 
-            // 🔐 Cargar información de sesión y botón logout
-fetch("http://localhost/multiserv-stock/api-stock/public/session.php")
-  .then(res => res.json())
+
+apiFetch("session.php")
   .then(data => {
 
     const contenedor = document.getElementById("usuario-info");
@@ -44,7 +43,7 @@ fetch("http://localhost/multiserv-stock/api-stock/public/session.php")
       document.getElementById("btnLogout")
         .addEventListener("click", () => {
 
-          fetch("http://localhost/multiserv-stock/api-stock/public/logout.php")
+          apiFetch("logout.php", { method: "POST" })
             .then(() => {
 
               // Redirige correctamente según carpeta
@@ -108,3 +107,4 @@ fetch("http://localhost/multiserv-stock/api-stock/public/session.php")
         })
         .catch(err => console.error("Error cargando header:", err));
 }
+

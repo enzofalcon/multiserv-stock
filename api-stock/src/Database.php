@@ -1,16 +1,16 @@
 <?php
 
-class Database
-{
+class Database {
     public static function getConnection(): PDO
     {
-        $host = "localhost";
-        $db   = "multiserv_stock";
-        $user = "root";
-        $pass = "";
+        $host = getenv('DB_HOST') ?: 'localhost';
+        $port = getenv('DB_PORT') ?: '3306';
+        $db   = getenv('DB_NAME') ?: 'multiserv';
+        $user = getenv('DB_USER') ?: 'root';
+        $pass = getenv('DB_PASS') ?: '';
 
         return new PDO(
-            "mysql:host=$host;dbname=$db;charset=utf8mb4",
+            "mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4",
             $user,
             $pass,
             [
