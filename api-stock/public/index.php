@@ -17,7 +17,7 @@ try {
 
         echo json_encode([
             "ok" => true,
-            "data" => $repo->getStockPorSucursal($numSucursal)
+            "data" => $repo->getStockTotalByProducto($numSucursal)
         ], JSON_UNESCAPED_UNICODE);
 
     } elseif ($method === "POST") {
