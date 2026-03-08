@@ -9,6 +9,13 @@ $data = json_decode(file_get_contents("php://input"), true);
 $email = trim($data["email"] ?? "");
 $password = trim($data["password"] ?? "");
 
+echo json_encode([
+    "data_recibida" => $data,
+    "email" => $email,
+    "password" => $password
+]);
+exit;
+
 if (!$email || !$password) {
     echo json_encode(["error" => "Datos incompletos"]);
     exit;
