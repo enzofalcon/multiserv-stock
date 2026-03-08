@@ -20,6 +20,12 @@ $conexion = $database->getConnection();
 $stmt = $conexion->prepare("SELECT * FROM usuario WHERE email = ? AND activo = 1");
 $stmt->execute([$email]);
 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+echo json_encode([
+    "password_ingresada" => $password,
+    "hash_en_bd" => $usuario["passwordHash"],
+    "resultado_verify" => password_verify($password, $usuario["passwordHash"])
+]);
+exit;
 
 if (!$usuario) {
     echo json_encode(["error" => "Usuario no encontrado"]);
