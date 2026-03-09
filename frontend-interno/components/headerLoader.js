@@ -20,91 +20,116 @@ function cargarHeader(pageName, breadcrumbList = []) {
         .then(r => r.text())
         .then(html => {
 
-            document.getElementById("header-container").innerHTML = html;
+            const container = document.getElementById("header-container");
+            if (!container) {
+                console.warn("header-container no encontrado");
+                return;
+            }
 
+            container.innerHTML = html;
 
+            /* ---------- SESIÓN ---------- */
 
+            apiFetch("session.php")
+                .then(data => {
 
-apiFetch("session.php")
-  .then(data => {
+                    const contenedor = document.getElementById("usuario-info");
+                    if (!contenedor) return;
 
-    const contenedor = document.getElementById("usuario-info");
-    if (!contenedor) return;
+                    if (data.logueado) {
 
-    if (data.logueado) {
+                        contenedor.innerHTML = `
+                            👤 ${data.usuario.nombre}
+                            <button id="btnLogout" class="btn btn-secondary">
+                                Cerrar sesión
+                            </button>
+                        `;
 
-      contenedor.innerHTML = `
-        👤 ${data.usuario.nombre}
-        <button id="btnLogout" class="btn btn-secondary">
-          Cerrar sesión
-        </button>
-      `;
+                        const btnLogout = document.getElementById("btnLogout");
 
-      document.getElementById("btnLogout")
-        .addEventListener("click", () => {
+                        if (btnLogout) {
+                            btnLogout.addEventListener("click", () => {
 
-          apiFetch("logout.php", { method: "POST" })
-            .then(() => {
+                                apiFetch("logout.php", { method: "POST" })
+                                    .then(() => {
 
-              // Redirige correctamente según carpeta
-              const enPages = window.location.pathname.includes("/pages/");
-              window.location.href = enPages ? "../login.html" : "login.html";
+                                        const enPages = window.location.pathname.includes("/pages/");
+                                        window.location.href = enPages ? "../login.html" : "login.html";
 
-            });
+                                    });
 
-        });
+                            });
+                        }
 
-    } else {
+                    } else {
 
-      const enPages = window.location.pathname.includes("/pages/");
-      contenedor.innerHTML = `
-        <a href="${enPages ? '../login.html' : 'login.html'}">
-          Iniciar sesión
-        </a>
-      `;
-    }
+                        const enPages = window.location.pathname.includes("/pages/");
+                        contenedor.innerHTML = `
+                            <a href="${enPages ? '../login.html' : 'login.html'}">
+                                Iniciar sesión
+                            </a>
+                        `;
+                    }
 
-  });   
-            /* ---------- 1. Título AUTOMÁTICO ---------- */
+                });
+
+            /* ---------- 1. Título automático ---------- */
+
             const title = document.getElementById("ms-page-title");
 
             const autoTitle = pageTitles[pageName] ?? "";
-            title.textContent = autoTitle ? ` / ${autoTitle}` : "";
+
+            if (title) {
+                title.textContent = autoTitle ? ` / ${autoTitle}` : "";
+            }
 
             /* ---------- 2. Rutas del menú ---------- */
-            document.getElementById("nav-inicio").href      = `${basePath}/index.html`;
-            document.getElementById("nav-productos").href   = `${basePath}/pages/productos.html`;
-            document.getElementById("nav-proveedores").href = `${basePath}/pages/proveedores.html`;
-            document.getElementById("nav-sucursales").href  = `${basePath}/pages/sucursales.html`;
 
-            // Logo → Inicio
-            document.getElementById("ms-logo-link").href = `${basePath}/index.html`;
+            const navInicio = document.getElementById("nav-inicio");
+            if (navInicio) navInicio.href = `${basePath}/index.html`;
 
-            /* ---------- 3. Activar botón del menú ---------- */
+            const navProductos = document.getElementById("nav-productos");
+            if (navProductos) navProductos.href = `${basePath}/pages/productos.html`;
+
+            const navProveedores = document.getElementById("nav-proveedores");
+            if (navProveedores) navProveedores.href = `${basePath}/pages/proveedores.html`;
+
+            const navSucursales = document.getElementById("nav-sucursales");
+            if (navSucursales) navSucursales.href = `${basePath}/pages/sucursales.html`;
+
+            const logo = document.getElementById("ms-logo-link");
+            if (logo) logo.href = `${basePath}/index.html`;
+
+            /* ---------- 3. Activar menú ---------- */
+
             const activeLink = document.querySelector(`.ms-nav a[data-page="${pageName}"]`);
             if (activeLink) activeLink.classList.add("active");
 
             /* ---------- 4. Breadcrumb ---------- */
+
             const bc = document.querySelector(".ms-breadcrumb");
 
-            if (!breadcrumbList.length) {
-                bc.innerHTML = "";
+            if (!bc || !breadcrumbList.length) {
+                if (bc) bc.innerHTML = "";
                 return;
             }
 
             let htmlBC = `<a href="${basePath}/index.html">Inicio</a>`;
 
             breadcrumbList.forEach((item, i) => {
+
                 htmlBC += ` <span class="separator">/</span> `;
+
                 if (i === breadcrumbList.length - 1) {
                     htmlBC += `<span class="current">${item.label}</span>`;
                 } else {
                     htmlBC += `<a href="${item.url}">${item.label}</a>`;
                 }
+
             });
 
             bc.innerHTML = htmlBC;
+
         })
         .catch(err => console.error("Error cargando header:", err));
 }
-

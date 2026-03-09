@@ -1,4 +1,4 @@
-admin@multiserv.local
+admin@multiserv.com
 123456
 
 pass de la base de datos en docker:
