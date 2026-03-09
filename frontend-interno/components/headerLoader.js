@@ -31,8 +31,7 @@ function cargarHeader(pageName, breadcrumbList = []) {
             /* ---------- SESIÓN ---------- */
 
             apiFetch("session.php")
-                .then(data => {
-
+                  .then(data => {
                     const contenedor = document.getElementById("usuario-info");
                     if (!contenedor) return;
 
