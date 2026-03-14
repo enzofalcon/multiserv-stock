@@ -27,7 +27,7 @@ function cargarHeader(pageName, breadcrumbList = []) {
             }
 
             container.innerHTML = html;
-
+            
             /* ---------- SESIÓN ---------- */
 
             apiFetch("session.php")
@@ -128,7 +128,7 @@ function cargarHeader(pageName, breadcrumbList = []) {
             });
 
             bc.innerHTML = htmlBC;
-
+            document.body.style.visibility = "visible";
         })
         .catch(err => console.error("Error cargando header:", err));
 }
