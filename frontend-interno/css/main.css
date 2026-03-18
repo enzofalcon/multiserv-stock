@@ -40,7 +40,6 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text-main);
   line-height: 1.5;
-  visibility: hidden;
 }
 
 header {
