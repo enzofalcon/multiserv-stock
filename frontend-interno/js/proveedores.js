@@ -127,7 +127,7 @@ function renderTablaProveedores(lista) {
     if (p.estado === "inactivo") {
       tr.classList.add("fila-inactiva");
     }
-
+    
     tr.innerHTML = `
       <td><input type="checkbox" class="chkProveedor"></td>
       <td>${p.idProveedor}</td>

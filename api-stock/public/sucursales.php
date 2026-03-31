@@ -70,7 +70,59 @@ if ($method === 'POST') {
     exit;
 }
 
+// ===================================================
+// PUT → cambiar estado (activar / inactivar)
+// ===================================================
+if ($method === 'PUT') {
 
+    try {
+
+        if (!isset($_GET['idSucursal'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'idSucursal requerido']);
+            exit;
+        }
+
+        $id = (int) $_GET['idSucursal'];
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($input['estado'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'estado requerido']);
+            exit;
+        }
+
+        $estado = $input['estado'];
+
+        $stmt = $conn->prepare("
+            UPDATE sucursal
+            SET estado = :estado
+            WHERE idSucursal = :id
+        ");
+
+        $stmt->execute([
+            ':estado' => $estado,
+            ':id' => $id
+        ]);
+
+        echo json_encode([
+            'success' => true,
+            'message' => $estado === 'activa'
+                ? 'Sucursal activada correctamente'
+                : 'Sucursal desactivada correctamente'
+        ]);
+
+        exit;
+
+    } catch (Throwable $e) {
+
+        http_response_code(500);
+        echo json_encode([
+            'error' => 'Error SQL: ' . $e->getMessage()
+        ]);
+        exit;
+    }
+}
 // ===================================================
 // Método no permitido
 // ===================================================

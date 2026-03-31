@@ -11,13 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnCancelar = document.getElementById('btnCancelarSucursal');
   const overlay = document.querySelector('#modalSucursal .modal-overlay');
   const btnGuardar = document.getElementById('btnGuardarSucursal');
+  const btnEliminar = document.getElementById('btnEliminarSucursal');
 
   if (btnNuevo) btnNuevo.addEventListener('click', abrirModalSucursal);
   if (btnCerrar) btnCerrar.addEventListener('click', cerrarModalSucursal);
   if (btnCancelar) btnCancelar.addEventListener('click', cerrarModalSucursal);
   if (overlay) overlay.addEventListener('click', cerrarModalSucursal);
   if (btnGuardar) btnGuardar.addEventListener('click', guardarSucursal);
-
+  if (btnEliminar) {
+    btnEliminar.addEventListener('click', eliminarSucursal);
+  }
 });
 
 
@@ -60,7 +63,7 @@ function renderSucursales(lista) {
   lista.forEach(s => {
 
     const tr = document.createElement('tr');
-
+    tr.dataset.estado = s.estado;
     tr.innerHTML = `
       <td><input type="checkbox" class="chkSucursal"></td>
       <td>${s.idSucursal}</td>
@@ -200,4 +203,54 @@ function limpiarSeleccionSucursales() {
 function marcarFilaSucursal(fila) {
   limpiarSeleccionSucursales();
   fila.classList.add("fila-seleccionada");
+}
+
+function eliminarSucursal() {
+
+  const id = document.getElementById("idSucursalActual").value;
+
+  if (!id) {
+    alert("Selecciona una sucursal");
+    return;
+  }
+
+  const fila = document.querySelector("#tablaSucursales tbody tr.fila-seleccionada");
+
+  if (!fila) {
+    alert("No se encontró la sucursal seleccionada.");
+    return;
+  }
+
+  const estadoActual = fila.dataset.estado;
+  const nuevoEstado = estadoActual === "activa" ? "inactiva" : "activa";
+
+  const mensaje =
+    estadoActual === "activa"
+      ? "¿Seguro que desea desactivar esta sucursal?"
+      : "¿Desea reactivar esta sucursal?";
+
+  if (!confirm(mensaje)) return;
+
+  apiFetch(`sucursales.php?idSucursal=${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ estado: nuevoEstado })
+  })
+  .then(resp => {
+
+    if (resp.error) {
+      alert(resp.error);
+      return;
+    }
+
+    alert(resp.message || "Estado actualizado");
+    cargarSucursales();
+
+    document.getElementById("accionesSucursal").classList.add("hidden");
+    document.getElementById("idSucursalActual").value = "";
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Error de conexión");
+  });
 }
