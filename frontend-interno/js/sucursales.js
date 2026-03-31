@@ -96,6 +96,21 @@ function renderSucursales(lista) {
 
         marcarFilaSucursal(tr);
 
+        // 🔽 AGREGADO: cambiar texto del botón según estado
+        const btnEliminar = document.getElementById("btnEliminarSucursal");
+
+        if (btnEliminar) {
+          if (s.estado === "inactiva") {
+            btnEliminar.innerText = "Reactivar";
+            btnEliminar.classList.remove("btn-danger");
+            btnEliminar.classList.add("btn-success");
+          } else {
+            btnEliminar.innerText = "Eliminar";
+            btnEliminar.classList.remove("btn-success");
+            btnEliminar.classList.add("btn-danger");
+          }
+        }
+
       } else {
 
         document.getElementById("accionesSucursal")
