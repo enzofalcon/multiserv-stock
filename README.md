@@ -71,12 +71,10 @@ https://multiserv-stock.onrender.com/
 
 Desde esta URL es posible acceder a la aplicación sin necesidad de realizar una instalación local.
 
-Para el acceso, se utiliza un usuario administrador preconfigurado.
-
 Para acceder al sistema, se dispone de un usuario administrador de prueba:
 
-Email: admin@multiserv.com
-Contraseña: admin123
+Email: [admin@multiserv.com](mailto:admin@multiserv.com)
+Contraseña: 123456
 
 Este usuario tiene fines exclusivamente demostrativos.
 
@@ -97,4 +95,3 @@ Esta versión corresponde a la v1.0 del sistema, enfocada en la gestión básica
 ## Autor
 
 Enzo Falcón
-
