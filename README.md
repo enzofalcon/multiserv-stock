@@ -73,6 +73,13 @@ Desde esta URL es posible acceder a la aplicación sin necesidad de realizar una
 
 Para el acceso, se utiliza un usuario administrador preconfigurado.
 
+Para acceder al sistema, se dispone de un usuario administrador de prueba:
+
+Email: admin@multiserv.com
+Contraseña: admin123
+
+Este usuario tiene fines exclusivamente demostrativos.
+
 ## Base de datos
 
 El sistema incluye scripts de inicialización que permiten crear automáticamente la estructura de base de datos al levantar el entorno.
