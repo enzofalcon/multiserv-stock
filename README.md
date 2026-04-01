@@ -63,13 +63,25 @@ docker-compose up -d
 
 http://localhost:8080
 
+## Acceso al sistema
+
+El sistema se encuentra desplegado y disponible en el siguiente enlace:
+
+https://multiserv-stock.onrender.com/
+
+Desde esta URL es posible acceder a la aplicación sin necesidad de realizar una instalación local.
+
+Para el acceso, se utiliza un usuario administrador preconfigurado.
+
 ## Base de datos
 
 El sistema incluye scripts de inicialización que permiten crear automáticamente la estructura de base de datos al levantar el entorno.
 
-## Usuario de acceso
+## Repositorio
 
-El sistema cuenta con un usuario administrador preconfigurado para pruebas.
+El código fuente del sistema se encuentra disponible en:
+
+https://github.com/enzofalcon/multiserv-stock
 
 ## Observaciones
 
@@ -78,3 +90,4 @@ Esta versión corresponde a la v1.0 del sistema, enfocada en la gestión básica
 ## Autor
 
 Enzo Falcón
+
